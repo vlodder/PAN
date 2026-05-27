@@ -20,6 +20,7 @@ namespace PAN
 
             builder.Services.AddSingleton<IDialogService, DialogService>();
             builder.Services.AddSingleton<INavigationService, NavigationService>();
+          
 
             builder.Services.AddSingleton<AppViewModel>();
             builder.Services.AddSingleton<EventsViewModel>();
@@ -32,6 +33,16 @@ namespace PAN
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<NewEventViewModel>();
             builder.Services.AddTransient<NewEventPage>();
+            builder.Services.AddTransient<HomeViewModel>();
+            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddScoped<IEvenementService, EvenementService>();
+            builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
+           
+
+
+
+
+
 
 #if DEBUG
             builder.Logging.AddDebug();

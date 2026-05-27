@@ -1,18 +1,68 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="PAN.Views.SearchPage"
-    xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:d="http://schemas.microsoft.com/dotnet/maui/global/design"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{x:Bind Heading}"
-    x:DataType="SearchViewModel"
-    ControlTemplate="{StaticResource VersionTemplate}"
-    mc:Ignorable="d">
-    <ContentPage.Content>
+    xmlns:models="clr-namespace:PAN.Models"
+    xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+    x:DataType="viewmodels:SearchViewModel"
+    Title="Recherche">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
         <Label
-            HorizontalOptions="Center"
-            Text="Search"
-            VerticalOptions="Center" />
-    </ContentPage.Content>
+            Text="Recherche d'observations"
+            FontSize="24"
+            FontAttributes="Bold" />
+
+        <SearchBar
+            Placeholder="Ville, description, type..."
+            Text="{Binding SearchText}"
+            SearchCommand="{Binding SearchCommand}" />
+
+        <Button
+            Text="Charger tous les événements"
+            Command="{Binding LoadCommand}" />
+
+        <CollectionView ItemsSource="{Binding Evenements}">
+            <CollectionView.EmptyView>
+                <Label
+                    Text="Aucun événement trouvé"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:EvenementListItem">
+                    <Frame Margin="0,5" Padding="10">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                Text="{Binding Ville}"
+                                FontAttributes="Bold"
+                                FontSize="18" />
+
+                            <Label Text="{Binding Descriptif}" />
+
+                            <Label
+                                Text="{Binding TypeNom, StringFormat='Type : {0}'}"
+                                TextColor="Gray" />
+
+                            <Label
+                                Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}"
+                                FontSize="12" />
+
+                            <Label
+                                Text="{Binding UpVote, StringFormat='Upvotes : {0}'}"
+                                FontSize="12" />
+
+                            <Label
+                                Text="{Binding DateHeureObservation, StringFormat='Date : {0:dd/MM/yyyy HH:mm}'}"
+                                FontSize="12" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
 </ContentPage>
