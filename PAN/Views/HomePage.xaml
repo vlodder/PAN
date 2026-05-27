@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PAN.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+    x:DataType="viewmodels:HomeViewModel"
+    Title="Accueil">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="25">
+
+            <Label
+                Text="GEIPAN"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Application de référencement d’observations de PAN"
+                FontSize="18"
+                HorizontalTextAlignment="Center" />
+
+            <Frame
+                Padding="20"
+                CornerRadius="12"
+                BackgroundColor="#F3F3F3"
+                BorderColor="#DDDDDD">
+
+                <VerticalStackLayout Spacing="15">
+                    <Label
+                        Text="Choisissez une action"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center" />
+
+                    <Button
+                        Text="Ajouter une observation"
+                        Command="{Binding GoToNewEventCommand}" />
+
+                    <Button
+                        Text="Rechercher des observations"
+                        Command="{Binding GoToSearchCommand}" />
+
+                    <Button
+                        Text="Connexion GEIPAN"
+                        Command="{Binding GoToLoginCommand}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label
+                Text="Le GEIPAN collecte et analyse les témoignages liés aux phénomènes aéronautiques non identifiés."
+                FontSize="14"
+                TextColor="Gray"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

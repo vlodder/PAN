@@ -1,11 +1,24 @@
-﻿namespace PAN.Views
+﻿using PAN.Services;
+using PAN.ViewModels;
+
+namespace PAN.Views
 {
     public partial class SearchPage : ContentPage
     {
-        public SearchPage(SearchViewModel viewModel)
+        public SearchPage()
         {
             InitializeComponent();
-            BindingContext = viewModel;
+            BindingContext = AppService.GetRequiredService<SearchViewModel>();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (BindingContext is SearchViewModel vm)
+            {
+                await vm.LoadCommand.ExecuteAsync(null);
+            }
         }
     }
 }

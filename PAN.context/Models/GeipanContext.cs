@@ -45,11 +45,12 @@ public partial class GeipanContext : DbContext
 
         modelBuilder.Entity<Evenement>(entity =>
         {
-            entity.HasKey(e => e.IdEvenement).HasName("PK__Evenemen__300AD07EFCA888E4");
+            entity.HasKey(e => e.IdEvenement).HasName("PK__Evenemen__300AD07E568856EA");
 
-            entity.Property(e => e.IdEvenement).ValueGeneratedNever();
+            entity.ToTable(tb => tb.HasTrigger("TRG_CheckObservationDate"));
+
             entity.Property(e => e.CompteRendu)
-                .HasMaxLength(50)
+                .HasMaxLength(500)
                 .IsUnicode(false);
             entity.Property(e => e.Descriptif)
                 .HasMaxLength(500)
@@ -59,25 +60,25 @@ public partial class GeipanContext : DbContext
 
             entity.HasOne(d => d.IdClassementNavigation).WithMany(p => p.Evenement)
                 .HasForeignKey(d => d.IdClassement)
-                .HasConstraintName("FK__Evenement__IdCla__2F10007B");
+                .HasConstraintName("FK__Evenement__IdCla__36B12243");
 
             entity.HasOne(d => d.IdLocalisationNavigation).WithMany(p => p.Evenement)
                 .HasForeignKey(d => d.IdLocalisation)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Evenement__IdLoc__2E1BDC42");
+                .HasConstraintName("FK__Evenement__IdLoc__35BCFE0A");
 
             entity.HasOne(d => d.IdPhenomeneNavigation).WithMany(p => p.Evenement)
                 .HasForeignKey(d => d.IdPhenomene)
-                .HasConstraintName("FK__Evenement__IdPhe__300424B4");
+                .HasConstraintName("FK__Evenement__IdPhe__37A5467C");
 
             entity.HasOne(d => d.IdTypeNavigation).WithMany(p => p.Evenement)
                 .HasForeignKey(d => d.IdType)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Evenement__IdTyp__30F848ED");
+                .HasConstraintName("FK__Evenement__IdTyp__38996AB5");
 
             entity.HasOne(d => d.IdUtilisateurNavigation).WithMany(p => p.Evenement)
                 .HasForeignKey(d => d.IdUtilisateur)
-                .HasConstraintName("FK__Evenement__IdUti__31EC6D26");
+                .HasConstraintName("FK__Evenement__IdUti__398D8EEE");
         });
 
         modelBuilder.Entity<Localisation>(entity =>

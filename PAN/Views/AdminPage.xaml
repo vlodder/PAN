@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+             x:Class="PAN.Views.AdminPage"
+             x:DataType="viewmodels:AdminViewModel"
+             Title="Administration - Statistiques">
+
+    <Grid RowDefinitions="Auto, *">
+        <Label Text="Statistiques des cas GEIPAN" 
+               FontSize="24" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center" 
+               Margin="0,20,0,0" />
+
+        <Grid Grid.Row="1" Margin="20" HorizontalOptions="Center" VerticalOptions="Center">
+            <!-- Pie Chart -->
+            <lvc:PieChart Series="{Binding Series}" 
+                          LegendPosition="Right"
+                          HeightRequest="400"
+                          WidthRequest="600" />
+
+            <!-- Center Text for Total -->
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="Les cas du" FontSize="16" HorizontalOptions="Center" TextColor="Black" />
+                <Label Text="GEIPAN" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black" />
+                <Label Text="{Binding TotalCases, StringFormat='{0} CAS'}" FontSize="16" HorizontalOptions="Center" TextColor="Black" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

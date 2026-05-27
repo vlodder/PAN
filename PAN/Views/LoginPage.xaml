@@ -11,11 +11,20 @@
     <ContentPage.Content>
         <StackLayout
             HorizontalOptions="Center"
-            VerticalOptions="Center">
+            VerticalOptions="Center"
+            Spacing="20">
+            
+            <Label Text="Accès GEIPAN" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+            
+            <Entry Placeholder="Mot de passe"
+                   IsPassword="True"
+                   Text="{Binding Password, Mode=TwoWay}"
+                   WidthRequest="250" />
+
             <Button
                 Command="{x:Bind LoginCommand}"
                 Style="{StaticResource PrimaryAction}"
-                Text="Login" />
+                Text="Connexion" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

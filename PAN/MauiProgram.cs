@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using LiveChartsCore.SkiaSharpView.Maui;
 
 namespace PAN
 {
@@ -12,6 +14,8 @@ namespace PAN
             builder
                 .UseMauiCommunityToolkit()
                 .UseMauiCommunityToolkitMarkup()
+                .UseSkiaSharp()
+                .UseLiveCharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,6 +24,7 @@ namespace PAN
 
             builder.Services.AddSingleton<IDialogService, DialogService>();
             builder.Services.AddSingleton<INavigationService, NavigationService>();
+          
 
             builder.Services.AddSingleton<AppViewModel>();
             builder.Services.AddSingleton<EventsViewModel>();
@@ -32,6 +37,18 @@ namespace PAN
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<NewEventViewModel>();
             builder.Services.AddTransient<NewEventPage>();
+            builder.Services.AddTransient<HomeViewModel>();
+            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<AdminViewModel>();
+            builder.Services.AddTransient<AdminPage>();
+            builder.Services.AddScoped<IEvenementService, EvenementService>();
+            builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
+           
+
+
+
+
+
 
 #if DEBUG
             builder.Logging.AddDebug();
