@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView 
+    x:Class="PAN.Controls.DateTimePicker"
+    xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/dotnet/maui/global/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <ContentView.Content>
+        <Grid ColumnDefinitions="45,Auto,Auto">
+            <Label
+                x:Name="lblTitle"
+                Grid.Column="0"
+                VerticalOptions="Center" />
+            <DatePicker
+                x:Name="occursOn"
+                Grid.Column="1" />
+            <TimePicker
+                x:Name="occursAt"
+                Grid.Column="2" />
+        </Grid>
+    </ContentView.Content>
+</ContentView>

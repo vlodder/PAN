@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="PAN.Views.NewEventPage"
+    xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/dotnet/maui/global/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Padding="{OnPlatform iOS={StaticResource ApplePadding},
+                         Default={StaticResource DefaultPadding}}"
+    Shell.PresentationMode="ModalAnimated"
+    Title="{x:Bind Heading}"
+    x:DataType="NewEventViewModel"
+    mc:Ignorable="d">
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry
+                Text="{x:Bind Occasion.Name}"
+                Placeholder="Event name"
+                MaxLength="100" />
+            <Entry
+                Text="{x:Bind Occasion.Location}"
+                Placeholder="Location"
+                MaxLength="100" />
+            <DateTimePicker
+                Title="Start:"
+                Date="{x:Bind Occasion.StartsAt.Date}"
+                MinimumDate="{x:Static sys:DateTime.Now}"
+                Time="{x:Bind Occasion.StartsAt.TimeOfDay}" />
+            <DateTimePicker
+                Title="End:"
+                Date="{x:Bind Occasion.EndsAt.Date}"
+                MinimumDate="{x:Static sys:DateTime.Now}"
+                Time="{x:Bind Occasion.EndsAt.TimeOfDay}" />
+            <Editor
+                Text="{x:Bind Occasion.Notes}"
+                HeightRequest="100"
+                Placeholder="Notes"
+                MaxLength="500" />
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button
+                    Command="{x:Bind SaveCommand}"
+                    Style="{StaticResource PrimaryAction}"
+                    Text="Save" />
+                <Button
+                    Command="{x:Bind CancelCommand}"
+                    Style="{StaticResource Action}"
+                    Text="Cancel" />
+            </HorizontalStackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
