@@ -79,7 +79,7 @@
         </CollectionView.Header>
 
         <CollectionView.EmptyView>
-            <Label Text="Aucun événement trouvé" HorizontalOptions="Center" Margin="40" VisualOptions="Center" />
+            <Label Text="Aucun événement trouvé" HorizontalOptions="Center" Margin="40" />
         </CollectionView.EmptyView>
 
         <CollectionView.ItemTemplate>

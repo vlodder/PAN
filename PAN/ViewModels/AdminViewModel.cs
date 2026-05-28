@@ -30,21 +30,43 @@ public partial class AdminViewModel : ObservableObject
     {
         _context = context;
         _evenementService = evenementService;
+    }
 
+    // Centralisation du rafraîchissement
+    public async Task RefreshDataAsync()
+    {
         LoadData();
-        _ = LoadEvenementsAsync();
+        await LoadEvenementsAsync();
     }
 
     private async Task LoadEvenementsAsync()
     {
         try
         {
-            var items = await _evenementService.GetAllAsync();
+            // Utilisation de AsNoTracking pour optimiser la mémoire en lecture seule
+            var items = await _context.Evenement
+                .AsNoTracking()
+                .Include(e => e.IdLocalisationNavigation)
+                .Include(e => e.IdTypeNavigation)
+                .Select(e => new EvenementListItem
+                {
+                    IdEvenement = e.IdEvenement,
+                    Ville = e.IdLocalisationNavigation != null ? e.IdLocalisationNavigation.Ville : "Inconnue",
+                    Descriptif = e.Descriptif,
+                    TypeNom = e.IdTypeNavigation != null ? e.IdTypeNavigation.Nom : "Inconnu",
+                    EstMouvant = e.Estmouvant,
+
+                    // On gère les éventuels NULL de la base de données
+                    DateHeureObservation = e.DateHeureObservation,
+                    UpVote = e.UpVote ?? 0 // Attention au 'v' minuscule de e.Upvote
+                })
+                .ToListAsync();
+
             Evenements = new ObservableCollection<EvenementListItem>(items);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Erreur lors de la récupération des observations : {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Erreur lors du chargement des observations : {ex.Message}");
         }
     }
 
@@ -55,61 +77,10 @@ public partial class AdminViewModel : ObservableObject
         await Shell.Current.GoToAsync($"EventDetailPage?idEvenement={item.IdEvenement}");
     }
 
-    private void LoadData()
-    {
-        var stats = new List<(string Name, int Count)>();
-        
-        try
-        {
-            // Try to get counts from database grouped by Classement
-            var dbStats = _context.Evenement
-                .Include(e => e.IdClassementNavigation)
-                .Where(e => e.IdClassement != null)
-                .GroupBy(e => e.IdClassementNavigation.Nom)
-                .Select(g => new { Name = g.Key, Count = g.Count() })
-                .ToList();
-
-            foreach (var item in dbStats)
-            {
-                stats.Add((item.Name ?? "Inconnu", item.Count));
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Database query failed: {ex.Message}");
-            // Better to see the error in the app if it fails
-            throw; 
-        }
-
-        var pieSeriesList = new List<ISeries>();
-        int total = stats.Sum(s => s.Count);
-
-        if (total > 0)
-        {
-            foreach (var stat in stats)
-            {
-                pieSeriesList.Add(new PieSeries<double>
-                {
-                    Values = new double[] { stat.Count },
-                    Name = stat.Name,
-                    InnerRadius = 80, // Donut shape
-                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
-                    DataLabelsSize = 12,
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer,
-                    DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue} Cas\n({(point.Coordinate.PrimaryValue / total * 100):N1}%)"
-                });
-            }
-        }
-
-        Series = pieSeriesList.ToArray();
-        TotalCases = total;
-    }
     [RelayCommand]
     private async Task EditEvenementAsync(EvenementListItem item)
     {
         if (item == null) return;
-
-        // Redirection vers la page de modification (par exemple NewEventPage en lui passant l'ID)
         await Shell.Current.GoToAsync($"NewEventPage?idEvenement={item.IdEvenement}");
     }
 
@@ -118,7 +89,6 @@ public partial class AdminViewModel : ObservableObject
     {
         if (item == null) return;
 
-        // Demande de confirmation à l'utilisateur
         bool confirm = await Shell.Current.DisplayAlert(
             "Confirmation de suppression",
             $"Voulez-vous vraiment supprimer l'observation de {item.Ville} ?",
@@ -128,23 +98,47 @@ public partial class AdminViewModel : ObservableObject
 
         try
         {
-            // Recherche de l'entité complète dans le DbContext
             var evenement = await _context.Evenement.FindAsync(item.IdEvenement);
             if (evenement != null)
             {
                 _context.Evenement.Remove(evenement);
                 await _context.SaveChangesAsync();
 
-                // Mise à jour de la liste locale pour rafraîchir l'interface immédiatement
-                Evenements.Remove(item);
-
-                // Rechargement optionnel des statistiques du graphique pour les synchroniser
-                LoadData();
+                // Rechargement immédiat de l'UI globale
+                await RefreshDataAsync();
             }
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Erreur", $"Impossible de supprimer l'événement : {ex.Message}", "OK");
+        }
+    }
+
+    private void LoadData()
+    {
+        try
+        {
+            var stats = _context.Evenement
+                .AsNoTracking()
+                .Include(e => e.IdClassementNavigation)
+                .GroupBy(e => e.IdClassementNavigation != null ? e.IdClassementNavigation.Nom : "Non classé")
+                .Select(g => new { Classification = g.Key, Count = g.Count() })
+                .ToList();
+
+            TotalCases = stats.Sum(s => s.Count);
+
+            Series = stats.Select(s => new PieSeries<int>
+            {
+                Values = new[] { s.Count },
+                Name = s.Classification,
+                DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue}"
+            }).ToArray();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Erreur statistiques : {ex.Message}");
         }
     }
 }

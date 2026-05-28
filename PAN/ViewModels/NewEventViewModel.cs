@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PAN.context.Models;
@@ -19,23 +20,23 @@ public partial class NewEventViewModel : ObservableObject
     [ObservableProperty]
     private string titrePage = "Nouvelle observation";
 
-    // Propriété magique pour masquer/afficher les champs d'administration
     [ObservableProperty]
     private bool isEditMode;
 
     [ObservableProperty] private string descriptif = string.Empty;
-    [ObservableProperty] private string compteRendu = string.Empty; // Nouveau champ
+    [ObservableProperty] private string compteRendu = string.Empty;
     [ObservableProperty] private DateTime dateObservation = DateTime.Now;
-    [ObservableProperty] private decimal latitude;
-    [ObservableProperty] private decimal longitude;
+
+    // Changement ici : on passe en string pour éviter les bugs de conversion MAUI liés à la virgule/point
+    [ObservableProperty] private string latitude = string.Empty;
+    [ObservableProperty] private string longitude = string.Empty;
+
     [ObservableProperty] private bool estMouvant;
 
-    // Listes alimentées par le Service et le Context
     [ObservableProperty] private ObservableCollection<string> villes = new();
     [ObservableProperty] private ObservableCollection<TypeOption> types = new();
     [ObservableProperty] private ObservableCollection<Classement> classements = new();
 
-    // Éléments sélectionnés
     [ObservableProperty] private string selectedVille = string.Empty;
     [ObservableProperty] private TypeOption? selectedType;
     [ObservableProperty] private Classement? selectedClassement;
@@ -81,7 +82,7 @@ public partial class NewEventViewModel : ObservableObject
         if (value.HasValue && value.Value > 0)
         {
             TitrePage = "Modifier l'observation";
-            IsEditMode = true; // On affiche le Cas et le Compte Rendu
+            IsEditMode = true;
 
             if (_listsLoaded)
             {
@@ -91,13 +92,13 @@ public partial class NewEventViewModel : ObservableObject
         else
         {
             TitrePage = "Nouvelle observation";
-            IsEditMode = false; // On masque l'administration
+            IsEditMode = false;
 
             Descriptif = string.Empty;
             CompteRendu = string.Empty;
             DateObservation = DateTime.Now;
-            Latitude = 0;
-            Longitude = 0;
+            Latitude = string.Empty;
+            Longitude = string.Empty;
             EstMouvant = false;
             SelectedVille = string.Empty;
             SelectedType = null;
@@ -118,8 +119,11 @@ public partial class NewEventViewModel : ObservableObject
                 Descriptif = ev.Descriptif ?? string.Empty;
                 CompteRendu = ev.CompteRendu ?? string.Empty;
                 DateObservation = ev.DateHeureObservation;
-                Latitude = ev.Latitude;
-                Longitude = ev.Longitude;
+
+                // Formatage explicite avec un point (InvariantCulture)
+                Latitude = ev.Latitude.ToString(CultureInfo.InvariantCulture);
+                Longitude = ev.Longitude.ToString(CultureInfo.InvariantCulture);
+
                 EstMouvant = ev.Estmouvant;
 
                 SelectedVille = ev.IdLocalisationNavigation?.Ville ?? string.Empty;
@@ -148,6 +152,16 @@ public partial class NewEventViewModel : ObservableObject
             return;
         }
 
+        // Parsing sécurisé des coordonnées (gère la virgule et le point)
+        decimal parsedLat = 0;
+        decimal parsedLon = 0;
+
+        if (!string.IsNullOrWhiteSpace(Latitude))
+            decimal.TryParse(Latitude.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedLat);
+
+        if (!string.IsNullOrWhiteSpace(Longitude))
+            decimal.TryParse(Longitude.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedLon);
+
         try
         {
             var loc = await _context.Localisation.FirstOrDefaultAsync(l => l.Ville == SelectedVille);
@@ -159,18 +173,16 @@ public partial class NewEventViewModel : ObservableObject
 
             if (IdEvenement.HasValue && IdEvenement.Value > 0)
             {
-                // === MODE MODIFICATION ===
                 var ev = await _context.Evenement.FindAsync(IdEvenement.Value);
                 if (ev != null)
                 {
                     ev.Descriptif = Descriptif;
                     ev.DateHeureObservation = DateObservation;
-                    ev.Latitude = Latitude;
-                    ev.Longitude = Longitude;
+                    ev.Latitude = parsedLat;
+                    ev.Longitude = parsedLon;
                     ev.Estmouvant = EstMouvant;
                     ev.IdType = SelectedType.Id;
 
-                    // On met à jour les champs exclusifs à l'édition
                     ev.IdClassement = SelectedClassement?.IdClassement;
                     ev.CompteRendu = string.IsNullOrWhiteSpace(CompteRendu) ? null : CompteRendu;
 
@@ -181,18 +193,15 @@ public partial class NewEventViewModel : ObservableObject
             }
             else
             {
-                // === MODE CRÉATION ===
                 var newEv = new Evenement
                 {
                     Descriptif = Descriptif,
                     DateHeureObservation = DateObservation,
-                    Latitude = Latitude,
-                    Longitude = Longitude,
+                    Latitude = parsedLat,
+                    Longitude = parsedLon,
                     Estmouvant = EstMouvant,
                     IdType = SelectedType.Id,
                     IdLocalisationNavigation = loc,
-
-                    // Forcé à null car non géré par l'utilisateur à la création
                     IdClassement = null,
                     CompteRendu = null
                 };
