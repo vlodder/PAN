@@ -18,5 +18,7 @@ namespace PAN.ViewModels
                 await DialogService.DisplayAlertAsync("Erreur", "Mot de passe incorrect", "OK");
             }
         }
+
+
     }
 }

@@ -90,35 +90,60 @@
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="models:EvenementListItem">
                         <Border Padding="15"
-                                Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
-                                StrokeThickness="1"
-                                StrokeShape="RoundRectangle 12"
-                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
+                Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
 
                             <Border.Shadow>
                                 <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.15}" />
                             </Border.Shadow>
 
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
-                                                      CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
 
-                            <VerticalStackLayout Spacing="6">
-                                <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
-                                <Label Text="{Binding Descriptif}" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" MaxLines="3" LineBreakMode="TailTruncation" />
+                                <VerticalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                    <VerticalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
+                                              CommandParameter="{Binding .}" />
+                                    </VerticalStackLayout.GestureRecognizers>
 
-                                <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
-                                    <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                    <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                    <Label Text="{Binding UpVote, StringFormat='👍 {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                </HorizontalStackLayout>
+                                    <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+                                    <Label Text="{Binding Descriptif}" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" MaxLines="2" LineBreakMode="TailTruncation" />
 
-                                <Label Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
-                                       FontSize="11" 
-                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" 
-                                       HorizontalOptions="End" />
-                            </VerticalStackLayout>
+                                    <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
+                                        <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                        <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                        <Label Text="{Binding UpVote, StringFormat='👍 {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    </HorizontalStackLayout>
+
+                                    <Label Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                           FontSize="11" 
+                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="15,0,0,0">
+                                    <Button Text="Modifier"
+                            Command="{Binding BindingContext.EditEvenementCommand, Source={x:Reference AdminPageRoot}}"
+                            CommandParameter="{Binding .}"
+                            BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}"
+                            TextColor="White"
+                            HeightRequest="36"
+                            WidthRequest="100"
+                            FontSize="12"
+                            CornerRadius="8" />
+
+                                    <Button Text="Supprimer"
+                            Command="{Binding BindingContext.DeleteEvenementCommand, Source={x:Reference AdminPageRoot}}"
+                            CommandParameter="{Binding .}"
+                            BackgroundColor="#EF4444"
+                            TextColor="White"
+                            HeightRequest="36"
+                            WidthRequest="100"
+                            FontSize="12"
+                            CornerRadius="8" />
+                                </VerticalStackLayout>
+
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>

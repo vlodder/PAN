@@ -104,4 +104,47 @@ public partial class AdminViewModel : ObservableObject
         Series = pieSeriesList.ToArray();
         TotalCases = total;
     }
+    [RelayCommand]
+    private async Task EditEvenementAsync(EvenementListItem item)
+    {
+        if (item == null) return;
+
+        // Redirection vers la page de modification (par exemple NewEventPage en lui passant l'ID)
+        await Shell.Current.GoToAsync($"NewEventPage?idEvenement={item.IdEvenement}");
+    }
+
+    [RelayCommand]
+    private async Task DeleteEvenementAsync(EvenementListItem item)
+    {
+        if (item == null) return;
+
+        // Demande de confirmation à l'utilisateur
+        bool confirm = await Shell.Current.DisplayAlert(
+            "Confirmation de suppression",
+            $"Voulez-vous vraiment supprimer l'observation de {item.Ville} ?",
+            "Oui", "Non");
+
+        if (!confirm) return;
+
+        try
+        {
+            // Recherche de l'entité complète dans le DbContext
+            var evenement = await _context.Evenement.FindAsync(item.IdEvenement);
+            if (evenement != null)
+            {
+                _context.Evenement.Remove(evenement);
+                await _context.SaveChangesAsync();
+
+                // Mise à jour de la liste locale pour rafraîchir l'interface immédiatement
+                Evenements.Remove(item);
+
+                // Rechargement optionnel des statistiques du graphique pour les synchroniser
+                LoadData();
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Erreur", $"Impossible de supprimer l'événement : {ex.Message}", "OK");
+        }
+    }
 }
