@@ -28,9 +28,13 @@ public partial class GeipanContext : DbContext
     public virtual DbSet<Utilisateur> Utilisateur { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=2a03:5840:111:1024:1849:a413:e326:9df5;User ID=sa;Password=erty64%;Database=Geipan;TrustServerCertificate=True;Encrypt=False;");
-
+            optionsBuilder.UseSqlServer("Server=2a03:5840:111:1024:1849:a413:e326:9df5;User ID=sa;Password=erty64%;Database=Geipan;TrustServerCertificate=True;Encrypt=False;");
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Classement>(entity =>
