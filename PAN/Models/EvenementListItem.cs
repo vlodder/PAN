@@ -10,5 +10,7 @@
         public string Ville { get; set; } = string.Empty;
         public string TypeNom { get; set; } = string.Empty;
         public int? IdType { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
     }
 }

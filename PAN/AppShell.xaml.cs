@@ -1,4 +1,5 @@
 ﻿using PAN.Views;
+using VijayAnand.MauiToolkit.Views;
 
 namespace PAN;
 
@@ -14,5 +15,8 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
         Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
         Routing.RegisterRoute(nameof(EventDetailPage), typeof(EventDetailPage));
+        Routing.RegisterRoute(nameof(AdminPage), typeof(AdminPage));
+        Routing.RegisterRoute(nameof(MapPage), typeof(MapPage));
+
     }
 }

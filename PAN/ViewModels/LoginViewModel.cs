@@ -11,12 +11,16 @@ namespace PAN.ViewModels
         {
             if (Password == "geipan")
             {
-                await NavigationService.GoToAsync("//admin");
+                await Shell.Current.GoToAsync("AdminPage");
             }
             else
             {
                 await DialogService.DisplayAlertAsync("Erreur", "Mot de passe incorrect", "OK");
             }
+        }
+        private async Task GoToHomeAsync()
+        {
+            await Shell.Current.GoToAsync("//HomePage");
         }
     }
 }

@@ -5,83 +5,305 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:PAN.ViewModels"
     x:DataType="viewmodels:EventDetailViewModel"
-    Title="Détail observation"
-    BackgroundColor="#0B1020">
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="#020B18">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="18">
+    <Grid>
 
-            <Label
-                Text="Fiche observation"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="White" />
+        <Image
+            Source="background_space.jpg"
+            Aspect="AspectFill"
+            Opacity="1" />
 
-            <Border
-                BackgroundColor="#151C32"
-                Stroke="#26324F"
-                StrokeShape="RoundRectangle 18"
-                Padding="18">
+        <BoxView Color="#020B18" Opacity="0.42" />
 
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="{Binding Evenement.Ville}" FontSize="22" FontAttributes="Bold" TextColor="White" />
-                    <Label Text="{Binding Evenement.CodePostal, StringFormat='Code postal : {0}'}" TextColor="#9AA7C2" />
-                    <Label Text="{Binding Evenement.TypeNom, StringFormat='Type : {0}'}" TextColor="#9AA7C2" />
-                    <Label Text="{Binding MouvantText, StringFormat='Mouvant : {0}'}" TextColor="#9AA7C2" />
-                    <Label Text="{Binding Evenement.DateHeureObservation, StringFormat='Date : {0:dd/MM/yyyy HH:mm}'}" TextColor="#9AA7C2" />
-                    <Label Text="{Binding Evenement.UpVote, StringFormat='Upvotes : {0}'}" TextColor="#5BE37D" FontAttributes="Bold" />
+        <Grid HorizontalOptions="Center" WidthRequest="430">
+            <Grid RowDefinitions="*,Auto">
 
-                    <BoxView HeightRequest="1" Color="#26324F" />
+                <ScrollView Grid.Row="0">
+                    <VerticalStackLayout Padding="26,56,26,30" Spacing="22">
 
-                    <Label Text="Description" TextColor="White" FontAttributes="Bold" />
-                    <Label Text="{Binding Evenement.Descriptif}" TextColor="#DDE6FF" />
-                </VerticalStackLayout>
-            </Border>
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Button
+                                Text="‹"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                CornerRadius="22"
+                                Padding="0"
+                                BackgroundColor="#09182D"
+                                BorderColor="#1D385C"
+                                BorderWidth="1"
+                                TextColor="White"
+                                FontSize="30"
+                                Command="{Binding BackCommand}" />
 
-            <Border
-    IsVisible="{Binding HasCoordinates}"
-    BackgroundColor="#151C32"
-    Stroke="#26324F"
-    StrokeShape="RoundRectangle 18"
-    Padding="12">
+                            <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" Spacing="2">
+                                <Label
+                                    Text="Fiche observation"
+                                    FontSize="30"
+                                    FontAttributes="Bold"
+                                    TextColor="White" />
 
-                <VerticalStackLayout Spacing="12">
+                                <Label
+                                    Text="Détail du phénomène observé"
+                                    FontSize="15"
+                                    TextColor="#AEB9CA" />
+                            </VerticalStackLayout>
+                        </Grid>
 
-                    <Label
-            Text="Localisation GPS"
-            FontSize="20"
-            FontAttributes="Bold"
-            TextColor="White" />
+                        <!-- CARTE PRINCIPALE -->
+                        <Frame
+                            CornerRadius="24"
+                            Padding="0"
+                            HasShadow="False"
+                            BackgroundColor="#0A1B31"
+                            BorderColor="#1D385C">
 
-                    <ContentView
-    x:Name="MapHost"
-    HeightRequest="350" />
+                            <VerticalStackLayout Spacing="0">
 
-                    <Button
-            Text="Ouvrir dans OpenStreetMap"
-            Command="{Binding OpenExternalMapCommand}"
-            BackgroundColor="#4CAF50"
-            TextColor="White"
-            CornerRadius="12"
-            HeightRequest="44" />
+                                <Grid Padding="18" ColumnDefinitions="58,*,Auto">
+                                    <Frame
+                                        WidthRequest="48"
+                                        HeightRequest="48"
+                                        CornerRadius="24"
+                                        Padding="0"
+                                        BackgroundColor="#0F3A86"
+                                        HasShadow="False">
 
-                </VerticalStackLayout>
+                                        <Label
+                                            Text="✧"
+                                            FontSize="25"
+                                            TextColor="White"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center" />
+                                    </Frame>
 
-            </Border>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label
+                                            Text="{Binding Evenement.Ville}"
+                                            FontSize="24"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
 
-            <Label
-                Text="Aucune coordonnée GPS disponible."
-                TextColor="#FFB84D"
-                IsVisible="{Binding HasNoCoordinates}" />
+                                        <Label
+                                            Text="{Binding Evenement.CodePostal, StringFormat='Code postal : {0}'}"
+                                            FontSize="14"
+                                            TextColor="#AEB9CA" />
+                                    </VerticalStackLayout>
 
-            <Button
-                Text="Upvote"
-                Command="{Binding UpVoteCommand}"
-                BackgroundColor="#4CAF50"
-                TextColor="White"
-                CornerRadius="12"
-                HeightRequest="48" />
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="{Binding Evenement.UpVote, StringFormat='↑ {0}'}"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        TextColor="#4ED464"
+                                        VerticalTextAlignment="Center" />
+                                </Grid>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                                <BoxView HeightRequest="1" Color="#1D385C" />
+
+                                <Grid Padding="18" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="Type" FontSize="13" TextColor="#7F8EA5" />
+                                        <Label Text="{Binding Evenement.TypeNom}" FontSize="15" FontAttributes="Bold" TextColor="White" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="Mouvement" FontSize="13" TextColor="#7F8EA5" />
+                                        <Label Text="{Binding MouvantText}" FontSize="15" FontAttributes="Bold" TextColor="White" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Margin="0,14,0,0" Spacing="4">
+                                        <Label Text="Date d'observation" FontSize="13" TextColor="#7F8EA5" />
+                                        <Label
+                                            Text="{Binding Evenement.DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                            FontSize="15"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Margin="0,18,0,0" Spacing="8">
+                                        <Label
+                                            Text="Description"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
+
+                                        <Label
+                                            Text="{Binding Evenement.Descriptif}"
+                                            FontSize="15"
+                                            TextColor="#D6DEEA"
+                                            LineBreakMode="WordWrap" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- MAP -->
+                        <Frame
+                            IsVisible="{Binding HasCoordinates}"
+                            CornerRadius="24"
+                            Padding="14"
+                            HasShadow="False"
+                            BackgroundColor="#0A1B31"
+                            BorderColor="#1D385C">
+
+                            <VerticalStackLayout Spacing="14">
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label
+                                            Text="Localisation GPS"
+                                            FontSize="21"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
+
+                                        <Label
+                                            Text="Position approximative de l'observation"
+                                            FontSize="13"
+                                            TextColor="#AEB9CA" />
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="⌖"
+                                        FontSize="28"
+                                        TextColor="#4ED464"
+                                        VerticalTextAlignment="Center" />
+                                </Grid>
+
+                                <Frame
+                                    CornerRadius="18"
+                                    Padding="0"
+                                    HasShadow="False"
+                                    BackgroundColor="#07172A"
+                                    BorderColor="#1D385C"
+                                    IsClippedToBounds="True">
+
+                                    <ContentView
+                                        x:Name="MapHost"
+                                        HeightRequest="300" />
+                                </Frame>
+
+                                <Button
+                                    Text="Ouvrir dans OpenStreetMap"
+                                    Command="{Binding OpenExternalMapCommand}"
+                                    HeightRequest="50"
+                                    CornerRadius="25"
+                                    BackgroundColor="#52D765"
+                                    TextColor="White"
+                                    FontSize="16"
+                                    FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- PAS DE GPS -->
+                        <Frame
+                            IsVisible="{Binding HasNoCoordinates}"
+                            CornerRadius="18"
+                            Padding="18"
+                            HasShadow="False"
+                            BackgroundColor="#0A1B31"
+                            BorderColor="#1D385C">
+
+                            <Grid ColumnDefinitions="48,*" ColumnSpacing="12">
+                                <Label
+                                    Text="!"
+                                    FontSize="30"
+                                    FontAttributes="Bold"
+                                    TextColor="#FFB84D"
+                                    HorizontalTextAlignment="Center"
+                                    VerticalTextAlignment="Center" />
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label
+                                        Text="Localisation indisponible"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        TextColor="White" />
+
+                                    <Label
+                                        Text="Aucune coordonnée GPS disponible pour cette observation."
+                                        FontSize="14"
+                                        TextColor="#AEB9CA" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+
+                        <!-- ACTION -->
+                        <Button
+                            Text="↑ Upvoter cette observation"
+                            Command="{Binding UpVoteCommand}"
+                            HeightRequest="54"
+                            CornerRadius="27"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="17"
+                            FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- NAV CUSTOM -->
+                <Frame
+                    Grid.Row="1"
+                    Margin="20,0,20,16"
+                    CornerRadius="18"
+                    Padding="0"
+                    HasShadow="False"
+                    BackgroundColor="#09182D"
+                    BorderColor="#1D385C">
+
+                    <Grid ColumnDefinitions="*,*,Auto,*,*" Padding="12,10" ColumnSpacing="10">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌂" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Accueil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="♢" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Carte" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="2"
+                            Text="+"
+                            Command="{Binding GoToNewEventCommand}"
+                            WidthRequest="68"
+                            HeightRequest="68"
+                            CornerRadius="34"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="34"
+                            FontAttributes="Bold"
+                            Padding="0" />
+
+                        <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌕" FontSize="26" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                            <Label Text="Rechercher" FontSize="13" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="♙" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Profil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Frame>
+
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

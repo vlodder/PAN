@@ -7,84 +7,327 @@
     xmlns:models="clr-namespace:PAN.Models"
     xmlns:viewmodels="clr-namespace:PAN.ViewModels"
     x:DataType="viewmodels:SearchViewModel"
-    Title="Recherche">
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="#020B18">
 
-    <Grid Padding="20" RowDefinitions="Auto,Auto,*" RowSpacing="15">
+    <Grid>
 
-        <Label
-            Grid.Row="0"
-            Text="Recherche multi-critères"
-            FontSize="24"
-            FontAttributes="Bold" />
+        <Image
+            Source="background_space.jpg"
+            Aspect="AspectFill"
+            Opacity="1" />
 
-        <VerticalStackLayout Grid.Row="1" Spacing="10">
+        <BoxView Color="#020B18" Opacity="0.38" />
 
-            <SearchBar
-                Placeholder="Rechercher dans le descriptif"
-                Text="{Binding SearchText}"
-                SearchCommand="{Binding SearchCommand}" />
+        <Grid HorizontalOptions="Center" WidthRequest="430">
+            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
 
-            <Picker
-                Title="Ville"
-                ItemsSource="{Binding Villes}"
-                SelectedItem="{Binding SelectedVille}" />
+                <!-- HEADER -->
+                <Grid
+                    Grid.Row="0"
+                    Padding="26,56,26,0"
+                    ColumnDefinitions="Auto,*">
 
-            <Picker
-                Title="Type"
-                ItemsSource="{Binding Types}"
-                ItemDisplayBinding="{Binding Nom}"
-                SelectedItem="{Binding SelectedType}" />
+                    <Button
+                        Text="‹"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        CornerRadius="22"
+                        BackgroundColor="#09182D"
+                        BorderColor="#1D385C"
+                        BorderWidth="1"
+                        TextColor="White"
+                        FontSize="30"
+                        Padding="0"
+                        Command="{Binding BackCommand}" />
 
-            <Picker
-                Title="Phénomène mouvant"
-                ItemsSource="{Binding Mouvements}"
-                SelectedItem="{Binding SelectedMouvement}" />
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Margin="14,0,0,0"
+                        Spacing="2">
 
-            <Button
-                Text="Rechercher"
-                Command="{Binding SearchCommand}" />
+                        <Label
+                            Text="Rechercher"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
 
-        </VerticalStackLayout>
+                        <Label
+                            Text="Trouvez des observations GEIPAN"
+                            FontSize="15"
+                            TextColor="#AEB9CA" />
+                    </VerticalStackLayout>
+                </Grid>
 
-        <CollectionView
-            Grid.Row="2"
-            ItemsSource="{Binding Evenements}"
-            RemainingItemsThreshold="2"
-            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+                <!-- FILTRES -->
+                <Frame
+                    Grid.Row="1"
+                    Margin="26,24,26,16"
+                    CornerRadius="22"
+                    Padding="18"
+                    HasShadow="False"
+                    BackgroundColor="#0A1B31"
+                    BorderColor="#1D385C">
 
-            <CollectionView.EmptyView>
-                <Label
-                    Text="Aucun événement trouvé"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center" />
-            </CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="14">
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:EvenementListItem">
-                    <Border
-                        Margin="0,5"
-                        Padding="10"
-                        Stroke="#D3D3D3"
-                        StrokeShape="RoundRectangle 10">
+                        <SearchBar
+                            Placeholder="Rechercher dans le descriptif"
+                            Text="{Binding SearchText}"
+                            SearchCommand="{Binding SearchCommand}"
+                            BackgroundColor="#09182D"
+                            TextColor="White"
+                            PlaceholderColor="#AEB9CA"
+                            CancelButtonColor="#4ED464" />
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference SearchPageRoot}}"
-                                CommandParameter="{Binding .}" />
-                        </Border.GestureRecognizers>
+                        <Picker
+                            Title="Ville"
+                            ItemsSource="{Binding Villes}"
+                            SelectedItem="{Binding SelectedVille}"
+                            BackgroundColor="#09182D"
+                            TextColor="White"
+                            TitleColor="#AEB9CA" />
 
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="18" />
-                            <Label Text="{Binding Descriptif}" />
-                            <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" />
-                            <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" />
-                            <Label Text="{Binding UpVote, StringFormat='Upvotes : {0}'}" />
-                            <Label Text="{Binding DateHeureObservation, StringFormat='Date : {0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
+                        <Picker
+                            Title="Type"
+                            ItemsSource="{Binding Types}"
+                            ItemDisplayBinding="{Binding Nom}"
+                            SelectedItem="{Binding SelectedType}"
+                            BackgroundColor="#09182D"
+                            TextColor="White"
+                            TitleColor="#AEB9CA" />
+
+                        <Picker
+                            Title="Phénomène mouvant"
+                            ItemsSource="{Binding Mouvements}"
+                            SelectedItem="{Binding SelectedMouvement}"
+                            BackgroundColor="#09182D"
+                            TextColor="White"
+                            TitleColor="#AEB9CA" />
+
+                        <Button
+                            Text="Rechercher"
+                            Command="{Binding SearchCommand}"
+                            HeightRequest="52"
+                            CornerRadius="26"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="17"
+                            FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- TITRE RESULTATS -->
+                <Grid
+                    Grid.Row="2"
+                    Padding="26,0,26,12"
+                    ColumnDefinitions="*,Auto">
+
+                    <Label
+                        Text="Résultats"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+
+                    <Label
+                        Grid.Column="1"
+                        Text="PAN"
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        TextColor="#4ED464"
+                        VerticalTextAlignment="Center" />
+                </Grid>
+
+                <!-- LISTE -->
+                <CollectionView
+                    Grid.Row="3"
+                    Margin="26,0,26,12"
+                    ItemsSource="{Binding Evenements}"
+                    RemainingItemsThreshold="2"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+
+                    <CollectionView.EmptyView>
+                        <Frame
+                            CornerRadius="18"
+                            Padding="24"
+                            HasShadow="False"
+                            BackgroundColor="#0A1B31"
+                            BorderColor="#1D385C">
+
+                            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                                <Label
+                                    Text="⌕"
+                                    FontSize="42"
+                                    TextColor="#5D9BFF"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Label
+                                    Text="Aucun événement trouvé"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Label
+                                    Text="Essayez avec d’autres critères."
+                                    FontSize="14"
+                                    TextColor="#AEB9CA"
+                                    HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:EvenementListItem">
+
+                            <Frame
+                                Margin="0,0,0,12"
+                                CornerRadius="18"
+                                Padding="0"
+                                HasShadow="False"
+                                BackgroundColor="#0A1B31"
+                                BorderColor="#1D385C">
+
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference SearchPageRoot}}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+
+                                <Grid Padding="16" ColumnDefinitions="58,*,Auto">
+
+                                    <Frame
+                                        WidthRequest="46"
+                                        HeightRequest="46"
+                                        CornerRadius="23"
+                                        Padding="0"
+                                        BackgroundColor="#0F3A86"
+                                        HasShadow="False">
+
+                                        <Label
+                                            Text="✧"
+                                            FontSize="24"
+                                            TextColor="White"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center" />
+                                    </Frame>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+
+                                        <Label
+                                            Text="{Binding Ville}"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
+
+                                        <Label
+                                            Text="{Binding Descriptif}"
+                                            FontSize="14"
+                                            TextColor="#D6DEEA"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2" />
+
+                                        <Label
+                                            Text="{Binding TypeNom, StringFormat='Type : {0}'}"
+                                            FontSize="13"
+                                            TextColor="#AEB9CA" />
+
+                                        <Label
+                                            Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                            FontSize="12"
+                                            TextColor="#AEB9CA" />
+
+                                        <Label
+                                            Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}"
+                                            FontSize="12"
+                                            TextColor="#AEB9CA" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="2"
+                                        Spacing="8"
+                                        VerticalOptions="Center">
+
+                                        <Label
+                                            Text="{Binding UpVote, StringFormat='↑ {0}'}"
+                                            FontSize="16"
+                                            FontAttributes="Bold"
+                                            TextColor="#4ED464"
+                                            HorizontalTextAlignment="End" />
+
+                                        <Label
+                                            Text="›"
+                                            FontSize="30"
+                                            TextColor="#AEB9CA"
+                                            HorizontalTextAlignment="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- NAV CUSTOM -->
+                <Frame
+                    Grid.Row="4"
+                    Margin="20,0,20,16"
+                    CornerRadius="18"
+                    Padding="0"
+                    HasShadow="False"
+                    BackgroundColor="#09182D"
+                    BorderColor="#1D385C">
+
+                    <Grid ColumnDefinitions="*,*,Auto,*,*" Padding="12,10" ColumnSpacing="10">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+
+                            <Label Text="⌂" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Accueil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
 
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToMapCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+
+                            <Label Text="♢" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Carte" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="2"
+                            Text="+"
+                            Command="{Binding GoToNewEventCommand}"
+                            WidthRequest="68"
+                            HeightRequest="68"
+                            CornerRadius="34"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="34"
+                            FontAttributes="Bold"
+                            Padding="0" />
+
+                        <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="⌕" FontSize="26" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                            <Label Text="Rechercher" FontSize="13" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+
+                            <Label Text="♙" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Profil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+            </Grid>
+        </Grid>
     </Grid>
 </ContentPage>

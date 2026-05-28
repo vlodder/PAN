@@ -49,8 +49,9 @@ namespace PAN
             builder.Services.AddTransient<AdminPage>();
             builder.Services.AddScoped<IEvenementService, EvenementService>();
             builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
-           
 
+            builder.Services.AddTransient<MapPage>();
+            builder.Services.AddTransient<MapViewModel>();
 
 
 

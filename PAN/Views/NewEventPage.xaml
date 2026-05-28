@@ -5,45 +5,222 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:PAN.ViewModels"
     x:DataType="viewmodels:NewEventViewModel"
-    Title="Nouvelle observation">
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="#020B18">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid>
 
-            <Label
-                Text="Ajouter une observation"
-                FontSize="24"
-                FontAttributes="Bold" />
+        <Image Source="background_space.jpg" Aspect="AspectFill" Opacity="1" />
+        <BoxView Color="#020B18" Opacity="0.42" />
 
-            <DatePicker
-                Date="{Binding DateObservation}" />
+        <Grid HorizontalOptions="Center" WidthRequest="430">
+            <Grid RowDefinitions="*,Auto">
 
-            <Editor
-                Placeholder="Décrivez ce que vous avez observé"
-                AutoSize="TextChanges"
-                HeightRequest="120"
-                Text="{Binding Descriptif}" />
+                <ScrollView Grid.Row="0">
+                    <VerticalStackLayout Padding="26,56,26,30" Spacing="22">
 
-            <Entry
-                Placeholder="Ville"
-                Text="{Binding Ville}" />
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Button
+                                Text="‹"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                CornerRadius="22"
+                                Padding="0"
+                                BackgroundColor="#09182D"
+                                BorderColor="#1D385C"
+                                BorderWidth="1"
+                                TextColor="White"
+                                FontSize="30"
+                                Command="{Binding BackCommand}" />
 
-            <HorizontalStackLayout Spacing="10">
-                <Label
-                    Text="Phénomène mouvant"
-                    VerticalOptions="Center" />
-                <Switch IsToggled="{Binding EstMouvant}" />
-            </HorizontalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" Spacing="2">
+                                <Label
+                                    Text="Ajouter"
+                                    FontSize="30"
+                                    FontAttributes="Bold"
+                                    TextColor="White" />
 
-            <Picker
-                Title="Type d'observation"
-                ItemsSource="{Binding Types}"
-                SelectedItem="{Binding TypeSelectionne}" />
+                                <Label
+                                    Text="Nouvelle observation GEIPAN"
+                                    FontSize="15"
+                                    TextColor="#AEB9CA" />
+                            </VerticalStackLayout>
+                        </Grid>
 
-            <Button
-                Text="Enregistrer"
-                Command="{Binding SaveCommand}" />
+                        <Frame
+                            CornerRadius="24"
+                            Padding="22"
+                            HasShadow="False"
+                            BackgroundColor="#0A1B31"
+                            BorderColor="#1D385C">
 
-        </VerticalStackLayout>
-    </ScrollView>
+                            <VerticalStackLayout Spacing="18">
+
+                                <Frame
+                                    WidthRequest="72"
+                                    HeightRequest="72"
+                                    CornerRadius="36"
+                                    Padding="0"
+                                    HasShadow="False"
+                                    BackgroundColor="#0F3A86"
+                                    HorizontalOptions="Center">
+
+                                    <Label
+                                        Text="+"
+                                        FontSize="42"
+                                        TextColor="White"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center" />
+                                </Frame>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Date d'observation" FontSize="14" TextColor="#AEB9CA" />
+                                    <DatePicker
+                                        Date="{Binding DateObservation}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Description" FontSize="14" TextColor="#AEB9CA" />
+                                    <Editor
+                                        Placeholder="Décrivez ce que vous avez observé"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="130"
+                                        Text="{Binding Descriptif}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        PlaceholderColor="#7F8EA5" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Ville" FontSize="14" TextColor="#AEB9CA" />
+                                    <Entry
+                                        Placeholder="Ex : Toulouse"
+                                        Text="{Binding Ville}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        PlaceholderColor="#7F8EA5"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
+
+                                <Frame
+                                    CornerRadius="18"
+                                    Padding="16"
+                                    HasShadow="False"
+                                    BackgroundColor="#09182D"
+                                    BorderColor="#1D385C">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label
+                                                Text="Phénomène mouvant"
+                                                FontSize="16"
+                                                FontAttributes="Bold"
+                                                TextColor="White" />
+
+                                            <Label
+                                                Text="Le phénomène était-il en déplacement ?"
+                                                FontSize="13"
+                                                TextColor="#AEB9CA" />
+                                        </VerticalStackLayout>
+
+                                        <Switch
+                                            Grid.Column="1"
+                                            IsToggled="{Binding EstMouvant}"
+                                            OnColor="#52D765"
+                                            ThumbColor="White"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Frame>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Type d'observation" FontSize="14" TextColor="#AEB9CA" />
+                                    <Picker
+                                        Title="Choisir un type"
+                                        ItemsSource="{Binding Types}"
+                                        SelectedItem="{Binding TypeSelectionne}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        TitleColor="#7F8EA5"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
+
+                                <Button
+                                    Text="Enregistrer l'observation"
+                                    Command="{Binding SaveCommand}"
+                                    HeightRequest="54"
+                                    CornerRadius="27"
+                                    BackgroundColor="#52D765"
+                                    TextColor="White"
+                                    FontSize="17"
+                                    FontAttributes="Bold" />
+
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Frame
+                    Grid.Row="1"
+                    Margin="20,0,20,16"
+                    CornerRadius="18"
+                    Padding="0"
+                    HasShadow="False"
+                    BackgroundColor="#09182D"
+                    BorderColor="#1D385C">
+
+                    <Grid ColumnDefinitions="*,*,Auto,*,*" Padding="12,10" ColumnSpacing="10">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌂" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Accueil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="♢" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Carte" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="2"
+                            Text="+"
+                            Command="{Binding GoToNewEventCommand}"
+                            WidthRequest="68"
+                            HeightRequest="68"
+                            CornerRadius="34"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="34"
+                            FontAttributes="Bold"
+                            Padding="0" />
+
+                        <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌕" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Rechercher" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="♙" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Profil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Frame>
+
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

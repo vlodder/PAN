@@ -5,8 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://schemas.microsoft.com/dotnet/maui/global/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{x:Bind Heading}"
-    x:DataType="SettingsViewModel"
+Title="Paramètres"    x:DataType="SettingsViewModel"
     ControlTemplate="{StaticResource VersionTemplate}"
     mc:Ignorable="d">
     <ContentPage.Content>

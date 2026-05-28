@@ -39,5 +39,9 @@ namespace PAN.ViewModels
         {
             await Shell.Current.DisplayAlert("Info", "Enregistrement à faire", "OK");
         }
+        private async Task GoToHomeAsync()
+        {
+            await Shell.Current.GoToAsync("//HomePage");
+        }
     }
 }

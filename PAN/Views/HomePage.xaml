@@ -141,11 +141,15 @@
                                         Command="{Binding GoToNewEventCommand}"
                                         WidthRequest="48"
                                         HeightRequest="48"
-                                        CornerRadius="24"
-                                        BackgroundColor="#0C5528"
-                                        TextColor="White"
-                                        FontSize="34"
-                                        HorizontalOptions="End" />
+                                        CornerRadius="29"
+    BackgroundColor="#07172A"
+    TextColor="White"
+    FontSize="28"
+    FontAttributes="Bold"
+    HorizontalOptions="End"
+    VerticalOptions="Center"
+    Padding="0"
+    TextTransform="None" />
                                 </Grid>
                             </Frame>
 
@@ -174,17 +178,21 @@
                                     </VerticalStackLayout>
 
                                     <Button
-                                        Grid.Row="2"
-                                        Grid.ColumnSpan="2"
-                                        Text="›"
-                                        Command="{Binding GoToSearchCommand}"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-                                        CornerRadius="24"
-                                        BackgroundColor="#07172A"
-                                        TextColor="White"
-                                        FontSize="34"
-                                        HorizontalOptions="End" />
+    Grid.Row="2"
+    Grid.ColumnSpan="2"
+    Text="›"
+    Command="{Binding GoToSearchCommand}"
+    WidthRequest="58"
+    HeightRequest="58"
+    CornerRadius="29"
+    BackgroundColor="#07172A"
+    TextColor="White"
+    FontSize="28"
+    FontAttributes="Bold"
+    HorizontalOptions="End"
+    VerticalOptions="Center"
+    Padding="0"
+    TextTransform="None" />
                                 </Grid>
                             </Frame>
                         </Grid>
@@ -314,6 +322,10 @@
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToMapCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+
                             <Label Text="♢" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             <Label Text="Carte" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
