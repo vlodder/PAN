@@ -27,7 +27,7 @@
                 <ScrollView Grid.Row="0">
                     <VerticalStackLayout Padding="26,28,26,30" Spacing="24">
 
-                      
+
 
                         <!-- LOGO -->
                         <Grid ColumnDefinitions="*,Auto" Margin="0,34,0,0">
