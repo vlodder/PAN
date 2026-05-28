@@ -30,5 +30,8 @@
             Route="login"
             ContentTemplate="{DataTemplate views:LoginPage}" />
     </FlyoutItem>
-
+    <ShellContent
+            Title="Administration"
+            Route="admin"
+            ContentTemplate="{DataTemplate views:AdminPage}" />
 </Shell>

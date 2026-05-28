@@ -12,30 +12,13 @@ namespace PAN.Services
             _context = context;
         }
 
-        public async Task<List<EvenementListItem>> GetAllAsync()
-        {
-            return await _context.Evenement
-                .Include(e => e.IdLocalisationNavigation)
-                .Include(e => e.IdTypeNavigation)
-                .OrderByDescending(e => e.DateHeureObservation)
-                .Select(e => new EvenementListItem
-                {
-                    IdEvenement = e.IdEvenement,
-                    DateHeureObservation = e.DateHeureObservation ?? DateTime.MinValue,
-                    Descriptif = e.Descriptif ?? string.Empty,
-                    EstMouvant = e.Estmouvant ?? false,
-                    UpVote = e.UpVote ?? 0,
-                    Ville = e.IdLocalisationNavigation != null
-                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
-                        : string.Empty,
-                    TypeNom = e.IdTypeNavigation != null
-                        ? e.IdTypeNavigation.Nom ?? string.Empty
-                        : string.Empty
-                })
-                .ToListAsync();
-        }
-
-        public async Task<List<EvenementListItem>> SearchAsync(string texte)
+        public async Task<List<EvenementListItem>> SearchPagedAsync(
+            string texte,
+            string ville,
+            int? idType,
+            bool? estMouvant,
+            int skip,
+            int take)
         {
             var query = _context.Evenement
                 .Include(e => e.IdLocalisationNavigation)
@@ -44,35 +27,132 @@ namespace PAN.Services
 
             if (!string.IsNullOrWhiteSpace(texte))
             {
-                texte = texte.ToLower();
+                string texteMin = texte.ToLower();
 
                 query = query.Where(e =>
-                    (e.Descriptif != null && e.Descriptif.ToLower().Contains(texte)) ||
-                    (e.IdLocalisationNavigation != null &&
-                     e.IdLocalisationNavigation.Ville != null &&
-                     e.IdLocalisationNavigation.Ville.ToLower().Contains(texte)) ||
-                    (e.IdTypeNavigation != null &&
-                     e.IdTypeNavigation.Nom != null &&
-                     e.IdTypeNavigation.Nom.ToLower().Contains(texte)));
+                    e.Descriptif != null &&
+                    e.Descriptif.ToLower().Contains(texteMin));
+            }
+
+            if (!string.IsNullOrWhiteSpace(ville))
+            {
+                string villeMin = ville.ToLower();
+
+                query = query.Where(e =>
+                    e.IdLocalisationNavigation != null &&
+                    e.IdLocalisationNavigation.Ville != null &&
+                    e.IdLocalisationNavigation.Ville.ToLower() == villeMin);
+            }
+
+            if (idType.HasValue)
+            {
+                query = query.Where(e => e.IdType == idType.Value);
+            }
+
+            if (estMouvant.HasValue)
+            {
+                query = query.Where(e => e.Estmouvant == estMouvant.Value);
             }
 
             return await query
                 .OrderByDescending(e => e.DateHeureObservation)
+                .Skip(skip)
+                .Take(take)
                 .Select(e => new EvenementListItem
                 {
                     IdEvenement = e.IdEvenement,
-                    DateHeureObservation = e.DateHeureObservation ?? DateTime.MinValue,
+
+                    DateHeureObservation = e.DateHeureObservation,
+
                     Descriptif = e.Descriptif ?? string.Empty,
-                    EstMouvant = e.Estmouvant ?? false,
+
+                    EstMouvant = e.Estmouvant,
+
                     UpVote = e.UpVote ?? 0,
-                    Ville = e.IdLocalisationNavigation != null
-                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
+
+                    Ville = e.IdLocalisationNavigation != null && e.IdLocalisationNavigation.Ville != null
+                        ? e.IdLocalisationNavigation.Ville
                         : string.Empty,
-                    TypeNom = e.IdTypeNavigation != null
-                        ? e.IdTypeNavigation.Nom ?? string.Empty
-                        : string.Empty
+
+                    TypeNom = e.IdTypeNavigation != null && e.IdTypeNavigation.Nom != null
+                        ? e.IdTypeNavigation.Nom
+                        : string.Empty,
+
+                    IdType = e.IdType
                 })
                 .ToListAsync();
+        }
+
+        public async Task<List<string>> GetVillesAsync()
+        {
+            return await _context.Localisation
+                .Where(l => l.Ville != null)
+                .Select(l => l.Ville!)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToListAsync();
+        }
+
+        public async Task<List<TypeOption>> GetTypesAsync()
+        {
+            return await _context.Type
+                .Select(t => new TypeOption
+                {
+                    Id = t.IdType,
+                    Nom = t.Nom ?? string.Empty
+                })
+                .OrderBy(t => t.Nom)
+                .ToListAsync();
+        }
+
+        public async Task<EvenementDetailItem?> GetByIdAsync(int idEvenement)
+        {
+            return await _context.Evenement
+                .Include(e => e.IdLocalisationNavigation)
+                .Include(e => e.IdTypeNavigation)
+                .Where(e => e.IdEvenement == idEvenement)
+                .Select(e => new EvenementDetailItem
+                {
+                    IdEvenement = e.IdEvenement,
+
+                    DateHeureObservation = e.DateHeureObservation,
+
+                    Descriptif = e.Descriptif ?? string.Empty,
+
+                    EstMouvant = e.Estmouvant,
+
+                    UpVote = e.UpVote ?? 0,
+
+                    Ville = e.IdLocalisationNavigation != null && e.IdLocalisationNavigation.Ville != null
+                        ? e.IdLocalisationNavigation.Ville
+                        : string.Empty,
+
+                    CodePostal = e.IdLocalisationNavigation != null
+                        ? e.IdLocalisationNavigation.CodePostal
+                        : null,
+
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
+
+                    TypeNom = e.IdTypeNavigation != null && e.IdTypeNavigation.Nom != null
+                        ? e.IdTypeNavigation.Nom
+                        : string.Empty
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> AddUpVoteAsync(int idEvenement)
+        {
+            var entity = await _context.Evenement
+                .FirstOrDefaultAsync(e => e.IdEvenement == idEvenement);
+
+            if (entity == null)
+                return false;
+
+            entity.UpVote = (entity.UpVote ?? 0) + 1;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

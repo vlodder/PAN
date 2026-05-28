@@ -1,52 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="PAN.Views.NewEventPage"
-    xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:d="http://schemas.microsoft.com/dotnet/maui/global/design"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    Padding="{OnPlatform iOS={StaticResource ApplePadding},
-                         Default={StaticResource DefaultPadding}}"
-    Shell.PresentationMode="ModalAnimated"
-    Title="{x:Bind Heading}"
-    x:DataType="NewEventViewModel"
-    mc:Ignorable="d">
-    <ContentPage.Content>
-        <StackLayout>
-            <Entry
-                Text="{x:Bind Occasion.Name}"
-                Placeholder="Event name"
-                MaxLength="100" />
-            <Entry
-                Text="{x:Bind Occasion.Location}"
-                Placeholder="Location"
-                MaxLength="100" />
-            <DateTimePicker
-                Title="Start:"
-                Date="{x:Bind Occasion.StartsAt.Date}"
-                MinimumDate="{x:Static sys:DateTime.Now}"
-                Time="{x:Bind Occasion.StartsAt.TimeOfDay}" />
-            <DateTimePicker
-                Title="End:"
-                Date="{x:Bind Occasion.EndsAt.Date}"
-                MinimumDate="{x:Static sys:DateTime.Now}"
-                Time="{x:Bind Occasion.EndsAt.TimeOfDay}" />
+    xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+    x:DataType="viewmodels:NewEventViewModel"
+    Title="Nouvelle observation">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label
+                Text="Ajouter une observation"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <DatePicker
+                Date="{Binding DateObservation}" />
+
             <Editor
-                Text="{x:Bind Occasion.Notes}"
-                HeightRequest="100"
-                Placeholder="Notes"
-                MaxLength="500" />
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <Button
-                    Command="{x:Bind SaveCommand}"
-                    Style="{StaticResource PrimaryAction}"
-                    Text="Save" />
-                <Button
-                    Command="{x:Bind CancelCommand}"
-                    Style="{StaticResource Action}"
-                    Text="Cancel" />
+                Placeholder="Décrivez ce que vous avez observé"
+                AutoSize="TextChanges"
+                HeightRequest="120"
+                Text="{Binding Descriptif}" />
+
+            <Entry
+                Placeholder="Ville"
+                Text="{Binding Ville}" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Label
+                    Text="Phénomène mouvant"
+                    VerticalOptions="Center" />
+                <Switch IsToggled="{Binding EstMouvant}" />
             </HorizontalStackLayout>
-        </StackLayout>
-    </ContentPage.Content>
+
+            <Picker
+                Title="Type d'observation"
+                ItemsSource="{Binding Types}"
+                SelectedItem="{Binding TypeSelectionne}" />
+
+            <Button
+                Text="Enregistrer"
+                Command="{Binding SaveCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
