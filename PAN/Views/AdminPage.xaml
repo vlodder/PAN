@@ -14,20 +14,26 @@
 
     <Grid>
 
-        <Image Source="background_space.jpg" Aspect="AspectFill" Opacity="1" />
-        <BoxView Color="#020B18" Opacity="0.42" />
+        <Image
+            Source="background_space.jpg"
+            Aspect="AspectFill"
+            Opacity="0.55"
+            InputTransparent="True" />
 
-        <Grid HorizontalOptions="Center" WidthRequest="430">
+        <BoxView Color="#020B18" Opacity="0.45" />
+
+        <Grid HorizontalOptions="Center" MaximumWidthRequest="520">
             <Grid RowDefinitions="*,Auto">
 
                 <CollectionView
                     Grid.Row="0"
                     ItemsSource="{Binding Evenements}"
                     SelectionMode="None"
-                    Margin="0,0,0,10">
+                    ItemSizingStrategy="MeasureFirstItem"
+                    ItemsUpdatingScrollMode="KeepScrollOffset">
 
                     <CollectionView.Header>
-                        <VerticalStackLayout Padding="26,56,26,20" Spacing="22">
+                        <VerticalStackLayout Padding="26,70,26,22" Spacing="22">
 
                             <!-- HEADER -->
                             <Grid ColumnDefinitions="Auto,*">
@@ -58,7 +64,7 @@
                                 </VerticalStackLayout>
                             </Grid>
 
-                            <!-- TOTAL CARD -->
+                            <!-- TOTAL -->
                             <Border
                                 Padding="20"
                                 BackgroundColor="#0A1B31"
@@ -86,7 +92,6 @@
                                         <Label
                                             Text="Total des cas"
                                             FontSize="14"
-                                            FontAttributes="Bold"
                                             TextColor="#AEB9CA" />
 
                                         <Label
@@ -106,7 +111,7 @@
                                 </Grid>
                             </Border>
 
-                            <!-- CHART -->
+                            <!-- GRAPH -->
                             <Border
                                 Padding="18"
                                 BackgroundColor="#0A1B31"
@@ -125,32 +130,73 @@
                                                 TextColor="White" />
 
                                             <Label
-                                                Text="Classifications"
+                                                Text="Classifications des PAN"
                                                 FontSize="14"
                                                 TextColor="#AEB9CA" />
                                         </VerticalStackLayout>
 
                                         <Label
                                             Grid.Column="1"
-                                            Text="PAN"
-                                            FontSize="18"
+                                            Text="Stats"
+                                            FontSize="17"
                                             FontAttributes="Bold"
                                             TextColor="#4ED464"
                                             VerticalTextAlignment="Center" />
                                     </Grid>
 
+                                    <!-- GRAPH -->
                                     <Border
-                                        Padding="8"
-                                        BackgroundColor="#07172A"
-                                        Stroke="#1D385C"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 18">
+    Padding="18"
+    BackgroundColor="#0A1B31"
+    Stroke="#1D385C"
+    StrokeThickness="1"
+    StrokeShape="RoundRectangle 24">
 
-                                        <lvc:PieChart
-                                            Series="{Binding Series}"
-                                            LegendPosition="Bottom"
-                                            HeightRequest="320"
-                                            BackgroundColor="Transparent" />
+                                        <VerticalStackLayout Spacing="16">
+
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <VerticalStackLayout Spacing="2">
+                                                    <Label
+                    Text="Répartition"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                                                    <Label
+                    Text="Survolez le graphique pour voir les détails"
+                    FontSize="14"
+                    TextColor="#AEB9CA" />
+                                                </VerticalStackLayout>
+
+                                                <Label
+                Grid.Column="1"
+                Text="Stats"
+                FontSize="17"
+                FontAttributes="Bold"
+                TextColor="#4ED464"
+                VerticalTextAlignment="Center" />
+                                            </Grid>
+
+                                            <Border
+            Padding="12"
+            BackgroundColor="#07172A"
+            Stroke="#1D385C"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 20"
+            HeightRequest="320">
+
+                                                <lvc:PieChart
+                Series="{Binding Series}"
+                LegendPosition="Hidden"
+                TooltipPosition="Top"
+                TooltipTextPaint="{Binding TooltipTextPaint}"
+                HeightRequest="300"
+                InitialRotation="-90"
+                MaxAngle="360"
+                BackgroundColor="Transparent" />
+                                            </Border>
+
+                                        </VerticalStackLayout>
                                     </Border>
 
                                 </VerticalStackLayout>
@@ -176,35 +222,11 @@
                     </CollectionView.Header>
 
                     <CollectionView.EmptyView>
-                        <Border
-                            Margin="26"
-                            Padding="24"
-                            BackgroundColor="#0A1B31"
-                            Stroke="#1D385C"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 20">
-
-                            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                                <Label
-                                    Text="⌕"
-                                    FontSize="42"
-                                    TextColor="#5D9BFF"
-                                    HorizontalTextAlignment="Center" />
-
-                                <Label
-                                    Text="Aucun événement"
-                                    FontSize="18"
-                                    FontAttributes="Bold"
-                                    TextColor="White"
-                                    HorizontalTextAlignment="Center" />
-
-                                <Label
-                                    Text="Aucune observation disponible."
-                                    FontSize="14"
-                                    TextColor="#AEB9CA"
-                                    HorizontalTextAlignment="Center" />
-                            </VerticalStackLayout>
-                        </Border>
+                        <Label
+                            Text="Aucune observation"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            Margin="30" />
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
@@ -212,46 +234,46 @@
 
                             <Border
                                 Margin="26,0,26,12"
-                                Padding="16"
+                                Padding="14"
                                 BackgroundColor="#0A1B31"
                                 Stroke="#1D385C"
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 20">
 
-                                <Grid ColumnDefinitions="50,*,Auto" ColumnSpacing="12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="46,*,Auto" ColumnSpacing="12">
 
                                     <Border
-                                        WidthRequest="42"
-                                        HeightRequest="42"
+                                        WidthRequest="40"
+                                        HeightRequest="40"
                                         BackgroundColor="#0F3A86"
                                         StrokeThickness="0"
-                                        StrokeShape="RoundRectangle 21"
-                                        VerticalOptions="Start">
+                                        StrokeShape="RoundRectangle 20">
 
                                         <Label
                                             Text="✧"
-                                            FontSize="22"
+                                            FontSize="20"
                                             TextColor="White"
                                             HorizontalTextAlignment="Center"
                                             VerticalTextAlignment="Center" />
                                     </Border>
 
-                                    <VerticalStackLayout Grid.Column="1" Spacing="5">
-                                        <VerticalStackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer
-                                                Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
-                                                CommandParameter="{Binding .}" />
-                                        </VerticalStackLayout.GestureRecognizers>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
 
                                         <Label
                                             Text="{Binding Ville}"
-                                            FontSize="18"
+                                            FontSize="17"
                                             FontAttributes="Bold"
                                             TextColor="White" />
 
                                         <Label
                                             Text="{Binding Descriptif}"
-                                            FontSize="14"
+                                            FontSize="13"
                                             TextColor="#D6DEEA"
                                             MaxLines="2"
                                             LineBreakMode="TailTruncation" />
@@ -264,13 +286,13 @@
                                         <Grid ColumnDefinitions="*,Auto">
                                             <Label
                                                 Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                                FontSize="12"
+                                                FontSize="11"
                                                 TextColor="#7F8EA5" />
 
                                             <Label
                                                 Grid.Column="1"
                                                 Text="{Binding UpVote, StringFormat='↑ {0}'}"
-                                                FontSize="13"
+                                                FontSize="12"
                                                 FontAttributes="Bold"
                                                 TextColor="#4ED464" />
                                         </Grid>
@@ -282,35 +304,34 @@
                                             Text="✎"
                                             Command="{Binding BindingContext.EditEvenementCommand, Source={x:Reference AdminPageRoot}}"
                                             CommandParameter="{Binding .}"
-                                            WidthRequest="42"
-                                            HeightRequest="42"
-                                            CornerRadius="21"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            CornerRadius="18"
                                             BackgroundColor="#143763"
                                             TextColor="White"
-                                            FontSize="18"
+                                            FontSize="15"
                                             Padding="0" />
 
                                         <Button
                                             Text="×"
                                             Command="{Binding BindingContext.DeleteEvenementCommand, Source={x:Reference AdminPageRoot}}"
                                             CommandParameter="{Binding .}"
-                                            WidthRequest="42"
-                                            HeightRequest="42"
-                                            CornerRadius="21"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            CornerRadius="18"
                                             BackgroundColor="#EF4444"
                                             TextColor="White"
-                                            FontSize="24"
+                                            FontSize="20"
                                             Padding="0" />
                                     </VerticalStackLayout>
 
                                 </Grid>
                             </Border>
-
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
 
                     <CollectionView.Footer>
-                        <BoxView HeightRequest="20" Color="Transparent" />
+                        <BoxView HeightRequest="24" Color="Transparent" />
                     </CollectionView.Footer>
 
                 </CollectionView>
@@ -319,21 +340,20 @@
                 <Border
                     Grid.Row="1"
                     Margin="20,0,20,16"
-                    Padding="0"
                     BackgroundColor="#09182D"
                     Stroke="#1D385C"
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 20">
 
-                    <Grid ColumnDefinitions="*,*,Auto,*,*" Padding="12,10" ColumnSpacing="10">
+                    <Grid ColumnDefinitions="*,*,72,*,*" Padding="12,10" ColumnSpacing="8">
 
                         <Border Grid.Column="0" Padding="6" BackgroundColor="Transparent">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="⌂" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Accueil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="⌂" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Accueil" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
@@ -342,8 +362,8 @@
                                 <TapGestureRecognizer Command="{Binding GoToMapCommand}" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="♢" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Carte" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="♢" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Carte" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
@@ -351,12 +371,12 @@
                             Grid.Column="2"
                             Text="+"
                             Command="{Binding GoToNewEventCommand}"
-                            WidthRequest="68"
-                            HeightRequest="68"
-                            CornerRadius="34"
+                            WidthRequest="64"
+                            HeightRequest="64"
+                            CornerRadius="32"
                             BackgroundColor="#52D765"
                             TextColor="White"
-                            FontSize="34"
+                            FontSize="32"
                             FontAttributes="Bold"
                             Padding="0" />
 
@@ -365,14 +385,14 @@
                                 <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="⌕" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Rechercher" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="⌕" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Recherche" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
                         <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
-                            <Label Text="♙" FontSize="26" TextColor="#4ED464" HorizontalTextAlignment="Center" />
-                            <Label Text="Admin" FontSize="13" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                            <Label Text="♙" FontSize="25" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                            <Label Text="Admin" FontSize="12" TextColor="#4ED464" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
 
                     </Grid>

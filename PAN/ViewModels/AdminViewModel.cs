@@ -4,21 +4,28 @@ using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
-using PAN.context.Models;
 using Microsoft.EntityFrameworkCore;
+using PAN.context.Models;
 using PAN.Models;
 using PAN.Services;
+using SkiaSharp;
 
 namespace PAN.ViewModels;
 
-public partial class AdminViewModel : ObservableObject
+public partial class AdminViewModel(
+    IDialogService dialogService,
+    INavigationService navigationService,
+    GeipanContext context,
+    IEvenementService evenementService)
+    : BaseViewModel(dialogService, navigationService)
 {
-    private readonly GeipanContext _context;
-    private readonly IEvenementService _evenementService;
+    private readonly GeipanContext _context = context;
+    private readonly IEvenementService _evenementService = evenementService;
+
+    public SolidColorPaint LegendTextPaint { get; } = new(SKColors.White);
 
     [ObservableProperty]
-    private ISeries[] series;
+    private ISeries[] series = [];
 
     [ObservableProperty]
     private int totalCases;
@@ -26,16 +33,9 @@ public partial class AdminViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<EvenementListItem> evenements = [];
 
-    public AdminViewModel(GeipanContext context, IEvenementService evenementService)
-    {
-        _context = context;
-        _evenementService = evenementService;
-    }
-
-    // Centralisation du rafraîchissement
     public async Task RefreshDataAsync()
     {
-        LoadData();
+        await LoadDataAsync();
         await LoadEvenementsAsync();
     }
 
@@ -43,22 +43,27 @@ public partial class AdminViewModel : ObservableObject
     {
         try
         {
-            // Utilisation de AsNoTracking pour optimiser la mémoire en lecture seule
             var items = await _context.Evenement
                 .AsNoTracking()
                 .Include(e => e.IdLocalisationNavigation)
                 .Include(e => e.IdTypeNavigation)
+                .OrderByDescending(e => e.DateHeureObservation)
                 .Select(e => new EvenementListItem
                 {
                     IdEvenement = e.IdEvenement,
-                    Ville = e.IdLocalisationNavigation != null ? e.IdLocalisationNavigation.Ville : "Inconnue",
-                    Descriptif = e.Descriptif,
-                    TypeNom = e.IdTypeNavigation != null ? e.IdTypeNavigation.Nom : "Inconnu",
+                    Ville = e.IdLocalisationNavigation != null && e.IdLocalisationNavigation.Ville != null
+                        ? e.IdLocalisationNavigation.Ville
+                        : "Inconnue",
+                    Descriptif = e.Descriptif ?? string.Empty,
+                    TypeNom = e.IdTypeNavigation != null && e.IdTypeNavigation.Nom != null
+                        ? e.IdTypeNavigation.Nom
+                        : "Inconnu",
                     EstMouvant = e.Estmouvant,
-
-                    // On gère les éventuels NULL de la base de données
                     DateHeureObservation = e.DateHeureObservation,
-                    UpVote = e.UpVote ?? 0 // Attention au 'v' minuscule de e.Upvote
+                    UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
+                    IdType = e.IdType
                 })
                 .ToListAsync();
 
@@ -66,79 +71,124 @@ public partial class AdminViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Erreur lors du chargement des observations : {ex.Message}");
+            await Shell.Current.DisplayAlert(
+                "Erreur",
+                $"Impossible de charger les observations : {ex.Message}",
+                "OK");
+        }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            var stats = await _context.Evenement
+                .AsNoTracking()
+                .Include(e => e.IdClassementNavigation)
+                .GroupBy(e => e.IdClassementNavigation != null && e.IdClassementNavigation.Nom != null
+                    ? e.IdClassementNavigation.Nom
+                    : "Non classé")
+                .Select(g => new
+                {
+                    Classification = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToListAsync();
+
+            TotalCases = stats.Sum(s => s.Count);
+
+            var colors = new[]
+            {
+                SKColor.Parse("#4ED464"),
+                SKColor.Parse("#5D9BFF"),
+                SKColor.Parse("#A855F7"),
+                SKColor.Parse("#F59E0B"),
+                SKColor.Parse("#EF4444"),
+                SKColor.Parse("#14B8A6"),
+                SKColor.Parse("#E879F9")
+            };
+
+            Series = stats.Select((s, index) => new PieSeries<int>
+            {
+                Name = $"{s.Classification} : {s.Count} cas",
+                Values = new[] { s.Count },
+
+                Fill = new SolidColorPaint(colors[index % colors.Length]),
+
+                Stroke = new SolidColorPaint(SKColor.Parse("#07172A"))
+                {
+                    StrokeThickness = 5
+                },
+
+                InnerRadius = 80,
+                MaxRadialColumnWidth = 85,
+                HoverPushout = 10,
+
+                DataLabelsPaint = null
+            }).ToArray();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert(
+                "Erreur",
+                $"Impossible de charger les statistiques : {ex.Message}",
+                "OK");
         }
     }
 
     [RelayCommand]
     private async Task OpenDetailAsync(EvenementListItem item)
     {
-        if (item == null) return;
+        if (item == null)
+            return;
+
         await Shell.Current.GoToAsync($"EventDetailPage?idEvenement={item.IdEvenement}");
     }
 
     [RelayCommand]
     private async Task EditEvenementAsync(EvenementListItem item)
     {
-        if (item == null) return;
+        if (item == null)
+            return;
+
         await Shell.Current.GoToAsync($"NewEventPage?idEvenement={item.IdEvenement}");
     }
 
     [RelayCommand]
     private async Task DeleteEvenementAsync(EvenementListItem item)
     {
-        if (item == null) return;
+        if (item == null)
+            return;
 
         bool confirm = await Shell.Current.DisplayAlert(
-            "Confirmation de suppression",
-            $"Voulez-vous vraiment supprimer l'observation de {item.Ville} ?",
-            "Oui", "Non");
+            "Suppression",
+            $"Supprimer l'observation de {item.Ville} ?",
+            "Oui",
+            "Non");
 
-        if (!confirm) return;
+        if (!confirm)
+            return;
 
         try
         {
-            var evenement = await _context.Evenement.FindAsync(item.IdEvenement);
-            if (evenement != null)
-            {
-                _context.Evenement.Remove(evenement);
-                await _context.SaveChangesAsync();
+            var evenement = await _context.Evenement
+                .FirstOrDefaultAsync(e => e.IdEvenement == item.IdEvenement);
 
-                // Rechargement immédiat de l'UI globale
-                await RefreshDataAsync();
-            }
+            if (evenement == null)
+                return;
+
+            _context.Evenement.Remove(evenement);
+            await _context.SaveChangesAsync();
+
+            await RefreshDataAsync();
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Erreur", $"Impossible de supprimer l'événement : {ex.Message}", "OK");
-        }
-    }
-
-    private void LoadData()
-    {
-        try
-        {
-            var stats = _context.Evenement
-                .AsNoTracking()
-                .Include(e => e.IdClassementNavigation)
-                .GroupBy(e => e.IdClassementNavigation != null ? e.IdClassementNavigation.Nom : "Non classé")
-                .Select(g => new { Classification = g.Key, Count = g.Count() })
-                .ToList();
-
-            TotalCases = stats.Sum(s => s.Count);
-
-            Series = stats.Select(s => new PieSeries<int>
-            {
-                Values = new[] { s.Count },
-                Name = s.Classification,
-                DataLabelsPaint = new SolidColorPaint(SKColors.White),
-                DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
-                DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue}"
-            }).ToArray();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Erreur statistiques : {ex.Message}");
-        }
-    }
+            await Shell.Current.DisplayAlert(
+                "Erreur",
+                $"Impossible de supprimer l'événement : {ex.Message}",
+                "OK");
+        } }
+        public SolidColorPaint TooltipTextPaint { get; } = new(SKColors.White);
 }
