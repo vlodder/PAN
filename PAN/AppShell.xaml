@@ -4,34 +4,42 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:PAN.Views"
-    FlyoutBehavior="Flyout">
+    FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Shell.BackgroundColor="#081426"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    Shell.UnselectedColor="#93A0B4"
+    Shell.TabBarBackgroundColor="#09182D"
+    Shell.TabBarForegroundColor="#53D769"
+    Shell.TabBarTitleColor="#53D769"
+    Shell.TabBarUnselectedColor="#A8B4C7">
 
-    <FlyoutItem Title="Accueil" Route="home">
+    <TabBar Route="main">
+
         <ShellContent
             Title="Accueil"
+            Route="home"
+            Icon="home.png"
             ContentTemplate="{DataTemplate views:HomePage}" />
-    </FlyoutItem>
 
-    <FlyoutItem Title="Observations">
         <ShellContent
-            Title="Ajouter une observation"
+            Title="Ajouter"
             Route="newEvent"
+            Icon="add.png"
             ContentTemplate="{DataTemplate views:NewEventPage}" />
 
         <ShellContent
-            Title="Rechercher"
+            Title="Recherche"
             Route="search"
+            Icon="search.png"
             ContentTemplate="{DataTemplate views:SearchPage}" />
-    </FlyoutItem>
 
-    <FlyoutItem Title="GEIPAN">
         <ShellContent
-            Title="Connexion"
+            Title="Profil"
             Route="login"
+            Icon="user.png"
             ContentTemplate="{DataTemplate views:LoginPage}" />
-    </FlyoutItem>
-    <ShellContent
-            Title="Administration"
-            Route="admin"
-            ContentTemplate="{DataTemplate views:AdminPage}" />
+
+    </TabBar>
 </Shell>
