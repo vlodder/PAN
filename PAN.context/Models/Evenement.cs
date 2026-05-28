@@ -7,15 +7,15 @@ public partial class Evenement
 {
     public int IdEvenement { get; set; }
 
-    public DateTime? DateHeureObservation { get; set; }
+    public DateTime DateHeureObservation { get; set; }
 
-    public string? Descriptif { get; set; }
+    public string Descriptif { get; set; } = null!;
 
-    public decimal? Latitude { get; set; }
+    public decimal Latitude { get; set; }
 
-    public decimal? Longitude { get; set; }
+    public decimal Longitude { get; set; }
 
-    public bool? Estmouvant { get; set; }
+    public bool Estmouvant { get; set; }
 
     public int? UpVote { get; set; }
 

@@ -115,7 +115,6 @@ public partial class GeipanContext : DbContext
         {
             entity.HasKey(e => e.IdUtilisateur).HasName("PK__Utilisat__45A4C1579B5CE7D6");
 
-            entity.Property(e => e.IdUtilisateur).ValueGeneratedNever();
             entity.Property(e => e.Nom)
                 .HasMaxLength(50)
                 .IsUnicode(false);

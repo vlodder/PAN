@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="PAN.Views.SearchPage"
+    x:Name="SearchPageRoot"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:PAN.Models"
@@ -25,6 +26,48 @@
             Command="{Binding LoadCommand}" />
 
         <CollectionView ItemsSource="{Binding Evenements}">
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*" RowSpacing="15">
+
+        <Label
+            Grid.Row="0"
+            Text="Recherche multi-critères"
+            FontSize="24"
+            FontAttributes="Bold" />
+
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+
+            <SearchBar
+                Placeholder="Rechercher dans le descriptif"
+                Text="{Binding SearchText}"
+                SearchCommand="{Binding SearchCommand}" />
+
+            <Picker
+                Title="Ville"
+                ItemsSource="{Binding Villes}"
+                SelectedItem="{Binding SelectedVille}" />
+
+            <Picker
+                Title="Type"
+                ItemsSource="{Binding Types}"
+                ItemDisplayBinding="{Binding Nom}"
+                SelectedItem="{Binding SelectedType}" />
+
+            <Picker
+                Title="Phénomène mouvant"
+                ItemsSource="{Binding Mouvements}"
+                SelectedItem="{Binding SelectedMouvement}" />
+
+            <Button
+                Text="Rechercher"
+                Command="{Binding SearchCommand}" />
+        </VerticalStackLayout>
+
+        <CollectionView
+            Grid.Row="2"
+            ItemsSource="{Binding Evenements}"
+            RemainingItemsThreshold="2"
+            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+
             <CollectionView.EmptyView>
                 <Label
                     Text="Aucun événement trouvé"
@@ -60,9 +103,30 @@
                                 FontSize="12" />
                         </VerticalStackLayout>
                     </Frame>
+                    <Border
+                        Margin="0,5"
+                        Padding="10"
+                        Stroke="#D3D3D3"
+                        StrokeShape="RoundRectangle 10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SearchViewModel}}, Path=OpenDetailCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="18" />
+                            <Label Text="{Binding Descriptif}" />
+                            <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" />
+                            <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" />
+                            <Label Text="{Binding UpVote, StringFormat='Upvotes : {0}'}" />
+                            <Label Text="{Binding DateHeureObservation, StringFormat='Date : {0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
+                        </VerticalStackLayout>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
     </VerticalStackLayout>
+    </Grid>
 </ContentPage>

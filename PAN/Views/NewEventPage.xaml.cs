@@ -1,14 +1,14 @@
-﻿namespace PAN.Views
+﻿using PAN.Services;
+using PAN.ViewModels;
+
+namespace PAN.Views
 {
     public partial class NewEventPage : ContentPage
     {
-        public NewEventPage(NewEventViewModel viewModel)
+        public NewEventPage()
         {
             InitializeComponent();
-            viewModel.Heading = "New Event";
-            BindingContext = viewModel;
+            BindingContext = AppService.GetRequiredService<NewEventViewModel>();
         }
-
-        protected override bool OnBackButtonPressed() => false;
     }
 }

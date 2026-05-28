@@ -29,11 +29,9 @@
             Title="Connexion"
             Route="login"
             ContentTemplate="{DataTemplate views:LoginPage}" />
-
-        <ShellContent
+    </FlyoutIte>m
+    <ShellContent
             Title="Administration"
             Route="admin"
             ContentTemplate="{DataTemplate views:AdminPage}" />
-    </FlyoutItem>
-
 </Shell>
