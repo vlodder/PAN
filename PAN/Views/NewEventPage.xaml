@@ -5,74 +5,290 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:PAN.ViewModels"
     x:DataType="viewmodels:NewEventViewModel"
-    Title="{Binding TitrePage}">
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="#020B18">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid>
 
-            <Label 
-                Text="{Binding TitrePage}"
-                FontSize="24"
-                FontAttributes="Bold" />
+        <Image Source="background_space.jpg" Aspect="AspectFill" Opacity="0.85" InputTransparent="True" />
+        <BoxView Color="#020B18" Opacity="0.38" InputTransparent="True" />
 
-            <VerticalStackLayout Spacing="10">
+        <Grid HorizontalOptions="Center" MaximumWidthRequest="520">
+            <Grid RowDefinitions="*,Auto">
 
-                <DatePicker 
-                    Date="{Binding DateObservation}" 
-                    Format="dd/MM/yyyy" />
+                <ScrollView Grid.Row="0">
+                    <VerticalStackLayout Padding="26,70,26,30" Spacing="22">
 
-                <Picker 
-                    Title="Ville"
-                    ItemsSource="{Binding Villes}"
-                    SelectedItem="{Binding SelectedVille}" />
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Button
+                                Text="‹"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                CornerRadius="22"
+                                Padding="0"
+                                BackgroundColor="#09182D"
+                                BorderColor="#1D385C"
+                                BorderWidth="1"
+                                TextColor="White"
+                                FontSize="30"
+                                Command="{Binding BackCommand}" />
 
-                <Picker 
-                    Title="Type"
-                    ItemsSource="{Binding Types}"
-                    ItemDisplayBinding="{Binding Nom}"
-                    SelectedItem="{Binding SelectedType}" />
+                            <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" Spacing="2">
+                                <Label
+                                    Text="{Binding TitrePage}"
+                                    FontSize="30"
+                                    FontAttributes="Bold"
+                                    TextColor="White" />
 
-                <Picker 
-                    Title="Cas (Classification)"
-                    ItemsSource="{Binding Classements}"
-                    ItemDisplayBinding="{Binding Nom}"
-                    SelectedItem="{Binding SelectedClassement}"
-                    IsVisible="{Binding IsEditMode}" />
+                                <Label
+                                    Text="Déclaration d'observation"
+                                    FontSize="15"
+                                    TextColor="#AEB9CA" />
+                            </VerticalStackLayout>
+                        </Grid>
 
-                <Entry 
-                    Placeholder="Latitude (Optionnel)"
-                    Text="{Binding Latitude}" 
-                    Keyboard="Numeric" />
+                        <!-- FORM -->
+                        <Border
+                            Padding="22"
+                            BackgroundColor="#0A1B31"
+                            Stroke="#1D385C"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 24">
 
-                <Entry 
-                    Placeholder="Longitude (Optionnel)"
-                    Text="{Binding Longitude}" 
-                    Keyboard="Numeric" />
+                            <VerticalStackLayout Spacing="18">
 
-                <HorizontalStackLayout Spacing="15" VerticalOptions="Center" Margin="5,0">
-                    <Label Text="Phénomène mouvant" VerticalOptions="Center" />
-                    <Switch IsToggled="{Binding EstMouvant}" VerticalOptions="Center" />
-                </HorizontalStackLayout>
+                                <Border
+                                    WidthRequest="72"
+                                    HeightRequest="72"
+                                    BackgroundColor="#0F3A86"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 36"
+                                    HorizontalOptions="Center">
 
-                <Editor 
-                    Placeholder="Description du témoin..."
-                    Text="{Binding Descriptif}" 
-                    HeightRequest="150" />
+                                    <Label
+                                        Text="+"
+                                        FontSize="42"
+                                        TextColor="White"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center" />
+                                </Border>
 
-                <Editor 
-                    Placeholder="Compte rendu officiel de l'enquête..."
-                    Text="{Binding CompteRendu}" 
-                    HeightRequest="150"
-                    IsVisible="{Binding IsEditMode}" />
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Date d'observation" FontSize="14" TextColor="#AEB9CA" />
+                                    <DatePicker
+                                        Date="{Binding DateObservation}"
+                                        Format="dd/MM/yyyy"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
 
-                <Button 
-                    Text="Enregistrer l'observation"
-                    Command="{Binding SaveCommand}"
-                    Margin="0,15,0,0" />
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Ville" FontSize="14" TextColor="#AEB9CA" />
+                                    <Picker
+                                        Title="Choisir une ville"
+                                        ItemsSource="{Binding Villes}"
+                                        SelectedItem="{Binding SelectedVille}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        TitleColor="#7F8EA5"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
 
-            </VerticalStackLayout>
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Type" FontSize="14" TextColor="#AEB9CA" />
+                                    <Picker
+                                        Title="Choisir un type"
+                                        ItemsSource="{Binding Types}"
+                                        ItemDisplayBinding="{Binding Nom}"
+                                        SelectedItem="{Binding SelectedType}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        TitleColor="#7F8EA5"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                                <VerticalStackLayout Spacing="6" IsVisible="{Binding IsEditMode}">
+                                    <Label Text="Classification" FontSize="14" TextColor="#AEB9CA" />
+                                    <Picker
+                                        Title="Choisir un cas"
+                                        ItemsSource="{Binding Classements}"
+                                        ItemDisplayBinding="{Binding Nom}"
+                                        SelectedItem="{Binding SelectedClassement}"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        TitleColor="#7F8EA5"
+                                        HeightRequest="52" />
+                                </VerticalStackLayout>
 
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="Latitude" FontSize="14" TextColor="#AEB9CA" />
+                                        <Entry
+                                            Placeholder="Optionnel"
+                                            Text="{Binding Latitude}"
+                                            Keyboard="Numeric"
+                                            BackgroundColor="#09182D"
+                                            TextColor="White"
+                                            PlaceholderColor="#7F8EA5"
+                                            HeightRequest="52" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                        <Label Text="Longitude" FontSize="14" TextColor="#AEB9CA" />
+                                        <Entry
+                                            Placeholder="Optionnel"
+                                            Text="{Binding Longitude}"
+                                            Keyboard="Numeric"
+                                            BackgroundColor="#09182D"
+                                            TextColor="White"
+                                            PlaceholderColor="#7F8EA5"
+                                            HeightRequest="52" />
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <Border
+                                    Padding="16"
+                                    BackgroundColor="#09182D"
+                                    Stroke="#1D385C"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 18">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label
+                                                Text="Phénomène mouvant"
+                                                FontSize="16"
+                                                FontAttributes="Bold"
+                                                TextColor="White" />
+
+                                            <Label
+                                                Text="Le phénomène était-il en déplacement ?"
+                                                FontSize="13"
+                                                TextColor="#AEB9CA" />
+                                        </VerticalStackLayout>
+
+                                        <Switch
+                                            Grid.Column="1"
+                                            IsToggled="{Binding EstMouvant}"
+                                            OnColor="#52D765"
+                                            ThumbColor="White"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Description du témoin" FontSize="14" TextColor="#AEB9CA" />
+                                    <Editor
+                                        Placeholder="Décrivez ce qui a été observé..."
+                                        Text="{Binding Descriptif}"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="140"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        PlaceholderColor="#7F8EA5" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="6" IsVisible="{Binding IsEditMode}">
+                                    <Label Text="Compte rendu officiel" FontSize="14" TextColor="#AEB9CA" />
+                                    <Editor
+                                        Placeholder="Compte rendu de l'enquête..."
+                                        Text="{Binding CompteRendu}"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="140"
+                                        BackgroundColor="#09182D"
+                                        TextColor="White"
+                                        PlaceholderColor="#7F8EA5" />
+                                </VerticalStackLayout>
+
+                                <Button
+                                    Text="Enregistrer l'observation"
+                                    Command="{Binding SaveCommand}"
+                                    HeightRequest="54"
+                                    CornerRadius="27"
+                                    BackgroundColor="#52D765"
+                                    TextColor="White"
+                                    FontSize="17"
+                                    FontAttributes="Bold"
+                                    Padding="0" />
+
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- NAV -->
+                <Border
+                    Grid.Row="1"
+                    Margin="20,0,20,16"
+                    Padding="0"
+                    BackgroundColor="#09182D"
+                    Stroke="#1D385C"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20">
+
+                    <Grid ColumnDefinitions="*,*,72,*,*" Padding="12,10" ColumnSpacing="8">
+
+                        <Border Grid.Column="0" Padding="6" BackgroundColor="Transparent">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="⌂" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Accueil" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1" Padding="6" BackgroundColor="Transparent">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToMapCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="♢" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Carte" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button
+                            Grid.Column="2"
+                            Text="+"
+                            Command="{Binding GoToNewEventCommand}"
+                            WidthRequest="64"
+                            HeightRequest="64"
+                            CornerRadius="32"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            Padding="0" />
+
+                        <Border Grid.Column="3" Padding="6" BackgroundColor="Transparent">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="⌕" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Recherche" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="4" Padding="6" BackgroundColor="Transparent">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="♙" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Profil" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

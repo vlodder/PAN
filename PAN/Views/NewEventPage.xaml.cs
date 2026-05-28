@@ -10,5 +10,12 @@ namespace PAN.Views
             InitializeComponent();
             BindingContext = AppService.GetRequiredService<NewEventViewModel>();
         }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (BindingContext is NewEventViewModel vm)
+                await vm.LoadCommand.ExecuteAsync(null);
+        }
     }
 }

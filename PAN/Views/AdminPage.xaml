@@ -186,14 +186,15 @@
             HeightRequest="320">
 
                                                 <lvc:PieChart
-                Series="{Binding Series}"
-                LegendPosition="Hidden"
-                TooltipPosition="Top"
-                TooltipTextPaint="{Binding TooltipTextPaint}"
-                HeightRequest="300"
-                InitialRotation="-90"
-                MaxAngle="360"
-                BackgroundColor="Transparent" />
+    Series="{Binding Series}"
+    LegendPosition="Hidden"
+    TooltipPosition="Top"
+    TooltipTextPaint="{Binding TooltipTextPaint}"
+    TooltipBackgroundPaint="{Binding TooltipBackgroundPaint}" 
+    HeightRequest="300"
+    InitialRotation="-90"
+    MaxAngle="360"
+    BackgroundColor="Transparent" />
                                             </Border>
 
                                         </VerticalStackLayout>
