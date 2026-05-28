@@ -1,48 +1,110 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="PAN.Views.NewEventPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewmodels="clr-namespace:PAN.ViewModels"
-    x:DataType="viewmodels:NewEventViewModel"
-    Title="Nouvelle observation">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+             x:Class="PAN.Views.NewEventPage"
+             x:DataType="viewmodels:NewEventViewModel"
+             Title="{Binding TitrePage}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+        <VerticalStackLayout Spacing="20" Padding="24">
 
-            <Label
-                Text="Ajouter une observation"
-                FontSize="24"
-                FontAttributes="Bold" />
+            <Label Text="{Binding TitrePage}" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" 
+                   HorizontalOptions="Start" />
 
-            <DatePicker
-                Date="{Binding DateObservation}" />
+            <VerticalStackLayout Spacing="15">
 
-            <Editor
-                Placeholder="Décrivez ce que vous avez observé"
-                AutoSize="TextChanges"
-                HeightRequest="120"
-                Text="{Binding Descriptif}" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Ville" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <Picker ItemsSource="{Binding Localisations}" 
+                                    SelectedItem="{Binding SelectedLocalisation}" 
+                                    ItemDisplayBinding="Ville" 
+                                    Title="Choisir une ville..." 
+                                    Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
 
-            <Entry
-                Placeholder="Ville"
-                Text="{Binding Ville}" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Date" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <DatePicker Date="{Binding DateObservation}" Format="dd/MM/yyyy" Margin="10,0" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
 
-            <HorizontalStackLayout Spacing="10">
-                <Label
-                    Text="Phénomène mouvant"
-                    VerticalOptions="Center" />
-                <Switch IsToggled="{Binding EstMouvant}" />
-            </HorizontalStackLayout>
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Type d'événement" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <Picker ItemsSource="{Binding Types}" 
+                                    SelectedItem="{Binding SelectedType}" 
+                                    ItemDisplayBinding="Nom" 
+                                    Title="Choisir un type..." 
+                                    Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
 
-            <Picker
-                Title="Type d'observation"
-                ItemsSource="{Binding Types}"
-                SelectedItem="{Binding TypeSelectionne}" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Classification (Cas)" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <Picker ItemsSource="{Binding Classements}" 
+                                    SelectedItem="{Binding SelectedClassement}" 
+                                    ItemDisplayBinding="Nom" 
+                                    Title="Non classé" 
+                                    Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
 
-            <Button
-                Text="Enregistrer"
-                Command="{Binding SaveCommand}" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Latitude" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <Entry Text="{Binding Latitude}" Keyboard="Numeric" Margin="5,0" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Longitude" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                            <Entry Text="{Binding Longitude}" Keyboard="Numeric" Margin="5,0" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center" Margin="0,5,0,0">
+                    <Label Text="Le phénomène était-il en mouvement ?" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" 
+                           VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding EstMouvant}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout Spacing="5" Margin="0,10,0,0">
+                    <Label Text="Description détaillée" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#4B5563}">
+                        <Editor Text="{Binding Descriptif}" 
+                                Placeholder="Décrivez la couleur, la vitesse, la forme..." 
+                                HeightRequest="120" 
+                                Margin="5" />
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <Button Text="Enregistrer l'observation" 
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="8"
+                    HeightRequest="48"
+                    Margin="0,15,0,20" />
 
         </VerticalStackLayout>
     </ScrollView>
