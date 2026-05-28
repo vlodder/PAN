@@ -9,146 +9,143 @@
              x:DataType="viewmodels:AdminViewModel"
              Title="Tableau de bord">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="24" Padding="20,30,20,40">
+    <CollectionView ItemsSource="{Binding Evenements}" SelectionMode="None">
 
-            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                <Label Text="Administration" 
-                       FontSize="14" 
-                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" 
-                       TextTransform="Uppercase" 
-                       CharacterSpacing="1.5" 
-                       HorizontalOptions="Center" />
-                <Label Text="Statistiques des cas GEIPAN" 
-                       FontSize="26" 
+        <CollectionView.Header>
+            <VerticalStackLayout Spacing="24" Padding="20,30,20,10">
+
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="Administration" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" 
+                           TextTransform="Uppercase" 
+                           CharacterSpacing="1.5" 
+                           HorizontalOptions="Center" />
+                    <Label Text="Statistiques des cas GEIPAN" 
+                           FontSize="26" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <Border StrokeShape="RoundRectangle 16"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                        StrokeThickness="1"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}"
+                        HorizontalOptions="Fill"
+                        Margin="10,0">
+
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="{AppThemeBinding Light=0.08, Dark=0.3}" />
+                    </Border.Shadow>
+
+                    <Grid RowDefinitions="Auto, *" Padding="24">
+                        <FlexLayout Grid.Row="0" JustifyContent="SpaceBetween" AlignItems="Center" Margin="0,0,0,20">
+                            <Label Text="Répartition des classifications" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+
+                            <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Center">
+                                <Label Text="TOTAL DES CAS" 
+                                       FontSize="12" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" 
+                                       HorizontalOptions="End" />
+                                <Label Text="{Binding TotalCases}" 
+                                       FontSize="32" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}" 
+                                       HorizontalOptions="End" 
+                                       Margin="0,-5,0,0"/>
+                            </VerticalStackLayout>
+                        </FlexLayout>
+
+                        <lvc:PieChart Grid.Row="1"
+                                      Series="{Binding Series}" 
+                                      LegendPosition="Right"
+                                      HeightRequest="450"
+                                      BackgroundColor="Transparent"
+                                      LegendTextPaint="{AppThemeBinding Light=#000000, Dark=#FFFFFF}" />
+                    </Grid>
+                </Border>
+
+                <Label Text="Toutes les observations" 
+                       FontSize="18" 
                        FontAttributes="Bold" 
-                       TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" 
-                       HorizontalOptions="Center" />
+                       TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" 
+                       Margin="10,20,10,0"/>
             </VerticalStackLayout>
+        </CollectionView.Header>
 
-            <Border StrokeShape="RoundRectangle 16"
-                    Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
-                    StrokeThickness="1"
-                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}"
-                    HorizontalOptions="Fill"
-                    Margin="10,0">
+        <CollectionView.EmptyView>
+            <Label Text="Aucun événement trouvé" HorizontalOptions="Center" Margin="40" VisualOptions="Center" />
+        </CollectionView.EmptyView>
 
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="{AppThemeBinding Light=0.08, Dark=0.3}" />
-                </Border.Shadow>
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:EvenementListItem">
+                <ContentView Padding="30,6">
+                    <Border Padding="15"
+                            Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
 
-                <Grid RowDefinitions="Auto, *" Padding="24">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.15}" />
+                        </Border.Shadow>
 
-                    <FlexLayout Grid.Row="0" 
-                                JustifyContent="SpaceBetween" 
-                                AlignItems="Center" 
-                                Margin="0,0,0,20">
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
 
-                        <Label Text="Répartition des classifications" 
-                               FontSize="18" 
-                               FontAttributes="Bold" 
-                               TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" />
+                            <VerticalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                <VerticalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
+                                                          CommandParameter="{Binding .}" />
+                                </VerticalStackLayout.GestureRecognizers>
 
-                        <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Center">
-                            <Label Text="TOTAL DES CAS" 
-                                   FontSize="12" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" 
-                                   HorizontalOptions="End" />
-                            <Label Text="{Binding TotalCases}" 
-                                   FontSize="32" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}" 
-                                   HorizontalOptions="End" 
-                                   Margin="0,-5,0,0"/>
-                        </VerticalStackLayout>
-                    </FlexLayout>
+                                <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+                                <Label Text="{Binding Descriptif}" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" MaxLines="2" LineBreakMode="TailTruncation" />
 
-                    <lvc:PieChart Grid.Row="1"
-                                  Series="{Binding Series}" 
-                                  LegendPosition="Right"
-                                  HeightRequest="450"
-                                  BackgroundColor="Transparent"
-                                  LegendTextPaint="{AppThemeBinding Light=#000000, Dark=#FFFFFF}" />
-                </Grid>
-            </Border>
+                                <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
+                                    <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Text="{Binding UpVote, StringFormat='👍 {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                </HorizontalStackLayout>
 
-            <Label Text="Toutes les observations" 
-                   FontSize="18" 
-                   FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" 
-                   Margin="10,20,10,0"/>
+                                <Label Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                                       FontSize="11" 
+                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
+                            </VerticalStackLayout>
 
-            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Evenements}" 
-                                 Spacing="12" 
-                                 Margin="10,0">
+                            <VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="15,0,0,0">
+                                <Button Text="Modifier"
+                                        Command="{Binding BindingContext.EditEvenementCommand, Source={x:Reference AdminPageRoot}}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}"
+                                        TextColor="White"
+                                        HeightRequest="36"
+                                        WidthRequest="100"
+                                        FontSize="12"
+                                        CornerRadius="8" />
 
-                <BindableLayout.EmptyView>
-                    <Label Text="Aucun événement trouvé" HorizontalOptions="Center" Margin="20" />
-                </BindableLayout.EmptyView>
+                                <Button Text="Supprimer"
+                                        Command="{Binding BindingContext.DeleteEvenementCommand, Source={x:Reference AdminPageRoot}}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#EF4444"
+                                        TextColor="White"
+                                        HeightRequest="36"
+                                        WidthRequest="100"
+                                        FontSize="12"
+                                        CornerRadius="8" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </ContentView>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
 
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="models:EvenementListItem">
-                        <Border Padding="15"
-                Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 12"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
-
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.15}" />
-                            </Border.Shadow>
-
-                            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-
-                                <VerticalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
-                                    <VerticalStackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
-                                              CommandParameter="{Binding .}" />
-                                    </VerticalStackLayout.GestureRecognizers>
-
-                                    <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
-                                    <Label Text="{Binding Descriptif}" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" MaxLines="2" LineBreakMode="TailTruncation" />
-
-                                    <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
-                                        <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                        <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                        <Label Text="{Binding UpVote, StringFormat='👍 {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                                    </HorizontalStackLayout>
-
-                                    <Label Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
-                           FontSize="11" 
-                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
-                                </VerticalStackLayout>
-
-                                <VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center" Margin="15,0,0,0">
-                                    <Button Text="Modifier"
-                            Command="{Binding BindingContext.EditEvenementCommand, Source={x:Reference AdminPageRoot}}"
-                            CommandParameter="{Binding .}"
-                            BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#3B82F6}"
-                            TextColor="White"
-                            HeightRequest="36"
-                            WidthRequest="100"
-                            FontSize="12"
-                            CornerRadius="8" />
-
-                                    <Button Text="Supprimer"
-                            Command="{Binding BindingContext.DeleteEvenementCommand, Source={x:Reference AdminPageRoot}}"
-                            CommandParameter="{Binding .}"
-                            BackgroundColor="#EF4444"
-                            TextColor="White"
-                            HeightRequest="36"
-                            WidthRequest="100"
-                            FontSize="12"
-                            CornerRadius="8" />
-                                </VerticalStackLayout>
-
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </VerticalStackLayout>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <CollectionView.Footer>
+            <BoxView HeightRequest="30" Color="Transparent" />
+        </CollectionView.Footer>
+    </CollectionView>
 </ContentPage>
