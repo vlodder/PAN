@@ -11,27 +11,40 @@
     Appearing="ContentPage_Appearing">
 
     <Grid>
-        <Image Source="background_space.jpg" Aspect="AspectFill" Opacity="1" />
-        <BoxView Color="#020B18" Opacity="0.42" />
+        <Image Source="background_space.jpg"
+               Aspect="AspectFill"
+               Opacity="1"
+               InputTransparent="True" />
 
-        <Grid HorizontalOptions="Center" MaximumWidthRequest="430">
+        <BoxView Color="#020B18"
+                 Opacity="0.42"
+                 InputTransparent="True" />
+
+        <Grid HorizontalOptions="Center"
+              MaximumWidthRequest="430">
+
             <Grid RowDefinitions="Auto,*,Auto">
 
-                <Grid Grid.Row="0" Padding="22,48,22,14" ColumnDefinitions="Auto,*">
-                    <Button
-                        Text="‹"
-                        WidthRequest="44"
-                        HeightRequest="44"
-                        CornerRadius="22"
-                        Padding="0"
-                        BackgroundColor="#09182D"
-                        BorderColor="#1D385C"
-                        BorderWidth="1"
-                        TextColor="White"
-                        FontSize="30"
-                        Command="{Binding BackCommand}" />
+                <!-- HEADER -->
+                <Grid Grid.Row="0"
+                      Padding="22,48,22,14"
+                      ColumnDefinitions="Auto,*">
 
-                    <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" Spacing="2">
+                    <Button Text="‹"
+                            WidthRequest="44"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            Padding="0"
+                            BackgroundColor="#09182D"
+                            BorderColor="#1D385C"
+                            BorderWidth="1"
+                            TextColor="White"
+                            FontSize="30"
+                            Command="{Binding BackCommand}" />
+
+                    <VerticalStackLayout Grid.Column="1"
+                                         Margin="14,0,0,0"
+                                         Spacing="2">
                         <Label Text="Carte"
                                FontSize="30"
                                FontAttributes="Bold"
@@ -43,90 +56,171 @@
                     </VerticalStackLayout>
                 </Grid>
 
-                <Frame
-                    Grid.Row="1"
-                    Margin="22,0,22,14"
-                    CornerRadius="24"
-                    Padding="0"
-                    HasShadow="False"
-                    BackgroundColor="#0A1B31"
-                    BorderColor="#1D385C"
-                    IsClippedToBounds="True">
+                <!-- CARTE -->
+                <Border Grid.Row="1"
+                        Margin="22,0,22,14"
+                        BackgroundColor="#0A1B31"
+                        Stroke="#1D385C"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 24">
+
+                    <Border.Shadow>
+                        <Shadow Brush="#00000088"
+                                Offset="0,4"
+                                Radius="14"
+                                Opacity="0.5" />
+                    </Border.Shadow>
 
                     <Grid RowDefinitions="*,Auto">
-                        <WebView
-                            Grid.Row="0"
-                            x:Name="MapWebView"
-                            Source="{Binding HtmlSource}" />
 
-                        <Button
-                            Grid.Row="1"
-                            Text="Charger +20 observations"
-                            Margin="12"
-                            HeightRequest="46"
-                            CornerRadius="18"
-                            BackgroundColor="#52D765"
-                            TextColor="White"
-                            FontAttributes="Bold"
-                            Command="{Binding LoadMoreCommand}" />
+                        <WebView Grid.Row="0"
+                                 x:Name="MapWebView"
+                                 Source="{Binding HtmlSource}" />
+
+                        <Button Grid.Row="1"
+                                Text="Charger +20 observations"
+                                Margin="12"
+                                HeightRequest="46"
+                                CornerRadius="18"
+                                BackgroundColor="#52D765"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                BorderWidth="0"
+                                Command="{Binding LoadMoreCommand}" />
                     </Grid>
-                </Frame>
+                </Border>
 
-                <Frame
-                    Grid.Row="2"
-                    Margin="18,0,18,14"
-                    CornerRadius="18"
-                    Padding="0"
-                    HasShadow="False"
-                    BackgroundColor="#09182D"
-                    BorderColor="#1D385C">
+                <!-- NAV CUSTOM MOBILE -->
+                <Border Grid.Row="2"
+                        Margin="16,0,16,12"
+                        BackgroundColor="#08182B"
+                        Stroke="#15304D"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 22">
 
-                    <Grid ColumnDefinitions="*,*,64,*,*" Padding="10,8" ColumnSpacing="6">
+                    <Border.Shadow>
+                        <Shadow Brush="#00000088"
+                                Offset="0,4"
+                                Radius="14"
+                                Opacity="0.6" />
+                    </Border.Shadow>
 
-                        <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                            <VerticalStackLayout.GestureRecognizers>
+                    <Grid ColumnDefinitions="*,*,64,*,*"
+                          Padding="10,8"
+                          ColumnSpacing="6">
+
+                        <!-- ACCUEIL -->
+                        <Border Grid.Column="0"
+                                BackgroundColor="Transparent"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="8,5">
+
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
-                            </VerticalStackLayout.GestureRecognizers>
-                            <Label Text="⌂" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                            <Label Text="Accueil" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                            </Border.GestureRecognizers>
 
-                        <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                            <Label Text="♢" FontSize="21" TextColor="#4ED464" HorizontalTextAlignment="Center" />
-                            <Label Text="Carte" FontSize="10" TextColor="#4ED464" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2"
+                                                 HorizontalOptions="Center">
+                                <Label Text="⌂"
+                                       FontSize="21"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
 
-                        <Button
-                            Grid.Column="2"
-                            Text="+"
-                            Command="{Binding GoToNewEventCommand}"
-                            WidthRequest="56"
-                            HeightRequest="56"
-                            CornerRadius="28"
-                            BackgroundColor="#52D765"
-                            TextColor="White"
-                            FontSize="28"
-                            FontAttributes="Bold"
-                            Padding="0" />
+                                <Label Text="Accueil"
+                                       FontSize="10"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
 
-                        <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
-                            <VerticalStackLayout.GestureRecognizers>
+                        <!-- CARTE ACTIVE -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="#0E243B"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="8,5">
+
+                            <VerticalStackLayout Spacing="2"
+                                                 HorizontalOptions="Center">
+                                <Label Text="♢"
+                                       FontSize="21"
+                                       TextColor="#4ED464"
+                                       HorizontalTextAlignment="Center" />
+
+                                <Label Text="Carte"
+                                       FontSize="10"
+                                       TextColor="#4ED464"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- AJOUT -->
+                        <Button Grid.Column="2"
+                                Text="+"
+                                Command="{Binding GoToNewEventCommand}"
+                                WidthRequest="56"
+                                HeightRequest="56"
+                                CornerRadius="28"
+                                BackgroundColor="#52D765"
+                                TextColor="White"
+                                FontSize="28"
+                                FontAttributes="Bold"
+                                BorderWidth="0"
+                                Padding="0" />
+
+                        <!-- RECHERCHE -->
+                        <Border Grid.Column="3"
+                                BackgroundColor="Transparent"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="8,5">
+
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
-                            </VerticalStackLayout.GestureRecognizers>
-                            <Label Text="⌕" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                            <Label Text="Recherche" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                            </Border.GestureRecognizers>
 
-                        <VerticalStackLayout Grid.Column="4" Spacing="2" HorizontalOptions="Center">
-                            <VerticalStackLayout.GestureRecognizers>
+                            <VerticalStackLayout Spacing="2"
+                                                 HorizontalOptions="Center">
+                                <Label Text="⌕"
+                                       FontSize="21"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
+
+                                <Label Text="Recherche"
+                                       FontSize="10"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- PROFIL -->
+                        <Border Grid.Column="4"
+                                BackgroundColor="Transparent"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="8,5">
+
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
-                            </VerticalStackLayout.GestureRecognizers>
-                            <Label Text="♙" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                            <Label Text="Profil" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="2"
+                                                 HorizontalOptions="Center">
+                                <Label Text="♙"
+                                       FontSize="21"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
+
+                                <Label Text="Profil"
+                                       FontSize="10"
+                                       TextColor="#AEB9CA"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
 
                     </Grid>
-                </Frame>
+                </Border>
 
             </Grid>
         </Grid>

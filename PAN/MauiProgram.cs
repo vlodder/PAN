@@ -2,9 +2,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using LiveChartsCore.SkiaSharpView.Maui;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
-using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace PAN
 {
@@ -27,42 +24,36 @@ namespace PAN
                     fonts.AddFont("OpenSans-SemiBold.ttf", "OpenSansSemiBold");
                 });
 
+            // Services
             builder.Services.AddSingleton<IDialogService, DialogService>();
             builder.Services.AddSingleton<INavigationService, NavigationService>();
-          
 
+            builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
+            builder.Services.AddScoped<IEvenementService, EvenementService>();
+
+            // ViewModels
             builder.Services.AddSingleton<AppViewModel>();
-            builder.Services.AddSingleton<EventsViewModel>();
-            builder.Services.AddSingleton<EventsPage>();
-            builder.Services.AddSingleton<SearchViewModel>();
-            builder.Services.AddSingleton<SearchPage>();
-            builder.Services.AddSingleton<SettingsViewModel>();
-            builder.Services.AddSingleton<SettingsPage>();
 
-            builder.Services.AddTransient<LoginViewModel>();
-            builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<NewEventViewModel>();
-            builder.Services.AddTransient<NewEventPage>();
             builder.Services.AddTransient<HomeViewModel>();
-            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<EventsViewModel>();
+            builder.Services.AddTransient<SearchViewModel>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<NewEventViewModel>();
             builder.Services.AddTransient<AdminViewModel>();
-            builder.Services.AddTransient<AdminPage>();
-            builder.Services.AddScoped<IEvenementService, EvenementService>();
-            builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
-
-            builder.Services.AddTransient<MapPage>();
             builder.Services.AddTransient<MapViewModel>();
-
-
-
-
             builder.Services.AddTransient<EventDetailViewModel>();
-            builder.Services.AddTransient<EventDetailPage>();
 
-            builder.Services.AddScoped<IEvenementService, EvenementService>();
-            builder.Services.AddScoped<PAN.context.Models.GeipanContext>();
-            builder.Services.AddTransient<AdminViewModel>();
+            // Pages
+            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<EventsPage>();
+            builder.Services.AddTransient<SearchPage>();
+            builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<NewEventPage>();
             builder.Services.AddTransient<AdminPage>();
+            builder.Services.AddTransient<MapPage>();
+            builder.Services.AddTransient<EventDetailPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

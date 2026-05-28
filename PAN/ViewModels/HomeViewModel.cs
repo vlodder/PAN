@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using PAN.Services;
+using PAN.Views;
 
 namespace PAN.ViewModels
 {
@@ -7,6 +9,5 @@ namespace PAN.ViewModels
         INavigationService navigationService)
         : BaseViewModel(dialogService, navigationService)
     { }
-    
-
 }
+       

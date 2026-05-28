@@ -3,7 +3,7 @@ using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
-using PAN.context.Models;
+using PAN.Models;
 using PAN.Services;
 
 namespace PAN.ViewModels;
@@ -16,7 +16,7 @@ public partial class MapViewModel : BaseViewModel
     private int _skip = 0;
     private bool _isLoaded = false;
 
-    private readonly List<Evenement> _loadedEvents = new();
+    private readonly List<EvenementListItem> _loadedEvents = new();
 
     [ObservableProperty]
     private HtmlWebViewSource htmlSource = new();
@@ -53,7 +53,11 @@ public partial class MapViewModel : BaseViewModel
 
             if (events.Count == 0)
             {
-                await DialogService.ShowAlertAsync("Info", "Aucune observation supplémentaire.", "OK");
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Info",
+                    "Aucune observation supplémentaire.",
+                    "OK");
+
                 return;
             }
 
@@ -64,7 +68,10 @@ public partial class MapViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await DialogService.ShowAlertAsync("Erreur", $"Impossible de charger la carte : {ex.Message}", "OK");
+            await Application.Current!.MainPage!.DisplayAlert(
+                "Erreur",
+                $"Impossible de charger la carte : {ex.Message}",
+                "OK");
         }
     }
 
@@ -80,13 +87,20 @@ public partial class MapViewModel : BaseViewModel
             string lat = Convert.ToDouble(ev.Latitude).ToString(CultureInfo.InvariantCulture);
             string lng = Convert.ToDouble(ev.Longitude).ToString(CultureInfo.InvariantCulture);
 
-            string titre = CleanJs(ev.Titre ?? "Observation");
-            string descriptif = CleanJs(ev.Descriptif ?? "");
+            string titre = CleanJs("Observation");
+            string descriptif = CleanJs(ev.Descriptif ?? string.Empty);
+            string ville = CleanJs(ev.Ville ?? string.Empty);
+            string type = CleanJs(ev.TypeNom ?? string.Empty);
+            string date = ev.DateHeureObservation.ToString("dd/MM/yyyy HH:mm") ?? "Date inconnue";
 
             markers.AppendLine($@"
                 L.marker([{lat}, {lng}])
                     .addTo(map)
-                    .bindPopup('<b>{titre}</b><br>{descriptif}');
+                    .bindPopup('<b>{titre}</b><br>' +
+                               '<b>Ville :</b> {ville}<br>' +
+                               '<b>Type :</b> {type}<br>' +
+                               '<b>Date :</b> {date}<br><br>' +
+                               '{descriptif}');
             ");
         }
 
@@ -122,7 +136,8 @@ public partial class MapViewModel : BaseViewModel
         }}).setView([46.603354, 1.888334], 5);
 
         L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-            maxZoom: 18
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
         }}).addTo(map);
 
         {markers}

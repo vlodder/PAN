@@ -337,64 +337,102 @@
 
                 </CollectionView>
 
-                <!-- NAV -->
-                <Border
-                    Grid.Row="1"
-                    Margin="20,0,20,16"
-                    BackgroundColor="#09182D"
-                    Stroke="#1D385C"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 20">
+                <!-- NAV CUSTOM MOBILE -->
+                <Border Grid.Row="1"
+        Margin="16,0,16,12"
+        BackgroundColor="#08182B"
+        Stroke="#15304D"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 22">
 
-                    <Grid ColumnDefinitions="*,*,72,*,*" Padding="12,10" ColumnSpacing="8">
+                    <Border.Shadow>
+                        <Shadow Brush="#00000088"
+                Offset="0,4"
+                Radius="14"
+                Opacity="0.6" />
+                    </Border.Shadow>
 
-                        <Border Grid.Column="0" Padding="6" BackgroundColor="Transparent">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="⌂" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Accueil" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                    <Grid ColumnDefinitions="*,*,64,*,*"
+          Padding="10,8"
+          ColumnSpacing="6">
+
+                        <!-- ACCUEIL ACTIF -->
+                        <Border Grid.Column="0"
+                BackgroundColor="#0E243B"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="8,5">
+
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="⌂" FontSize="21" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                                <Label Text="Accueil" FontSize="10" TextColor="#4ED464" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Column="1" Padding="6" BackgroundColor="Transparent">
+                        <!-- CARTE -->
+                        <Border Grid.Column="1"
+                BackgroundColor="Transparent"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="8,5">
+
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToMapCommand}" />
                             </Border.GestureRecognizers>
-                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="♢" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Carte" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="♢" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Carte" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <Button
-                            Grid.Column="2"
-                            Text="+"
-                            Command="{Binding GoToNewEventCommand}"
-                            WidthRequest="64"
-                            HeightRequest="64"
-                            CornerRadius="32"
-                            BackgroundColor="#52D765"
-                            TextColor="White"
-                            FontSize="32"
-                            FontAttributes="Bold"
-                            Padding="0" />
+                        <!-- PLUS -->
+                        <Button Grid.Column="2"
+                Text="+"
+                Command="{Binding GoToNewEventCommand}"
+                WidthRequest="56"
+                HeightRequest="56"
+                CornerRadius="28"
+                BackgroundColor="#52D765"
+                TextColor="White"
+                FontSize="28"
+                FontAttributes="Bold"
+                BorderWidth="0"
+                Padding="0" />
 
-                        <Border Grid.Column="3" Padding="6" BackgroundColor="Transparent">
+                        <!-- RECHERCHE -->
+                        <Border Grid.Column="3"
+                BackgroundColor="Transparent"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="8,5">
+
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
                             </Border.GestureRecognizers>
-                            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                                <Label Text="⌕" FontSize="25" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
-                                <Label Text="Recherche" FontSize="12" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="⌕" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Recherche" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
                         </Border>
 
-                        <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
-                            <Label Text="♙" FontSize="25" TextColor="#4ED464" HorizontalTextAlignment="Center" />
-                            <Label Text="Admin" FontSize="12" TextColor="#4ED464" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                        <!-- PROFIL -->
+                        <Border Grid.Column="4"
+                BackgroundColor="Transparent"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="8,5">
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="♙" FontSize="21" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                                <Label Text="Profil" FontSize="10" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
 
                     </Grid>
                 </Border>

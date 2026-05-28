@@ -14,30 +14,18 @@ namespace PAN.Services
 
         public async Task<List<EvenementListItem>> GetAllAsync()
         {
-            return await _context.Evenement
-                .Include(e => e.IdLocalisationNavigation)
-                .Include(e => e.IdTypeNavigation)
+            return await BuildListQuery()
                 .OrderByDescending(e => e.DateHeureObservation)
-                .Select(e => new EvenementListItem
-                {
-                    IdEvenement = e.IdEvenement,
-                    DateHeureObservation = e.DateHeureObservation,
-                    Descriptif = e.Descriptif ?? string.Empty,
-                    EstMouvant = e.Estmouvant,
-                    UpVote = e.UpVote ?? 0,
-                    Latitude = e.Latitude,
-                    Longitude = e.Longitude,
+                .ToListAsync();
+        }
 
-                    Ville = e.IdLocalisationNavigation != null
-                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
-                        : string.Empty,
-
-                    TypeNom = e.IdTypeNavigation != null
-                        ? e.IdTypeNavigation.Nom ?? string.Empty
-                        : string.Empty,
-
-                    IdType = e.IdType
-                })
+        public async Task<List<EvenementListItem>> GetEventsForMapAsync(int skip, int take)
+        {
+            return await BuildListQuery()
+                .Where(e => e.Latitude != null && e.Longitude != null)
+                .OrderByDescending(e => e.DateHeureObservation)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync();
         }
 
@@ -56,7 +44,7 @@ namespace PAN.Services
 
             if (!string.IsNullOrWhiteSpace(texte))
             {
-                string texteMin = texte.ToLower();
+                var texteMin = texte.ToLower();
 
                 query = query.Where(e =>
                     e.Descriptif != null &&
@@ -65,7 +53,7 @@ namespace PAN.Services
 
             if (!string.IsNullOrWhiteSpace(ville))
             {
-                string villeMin = ville.ToLower();
+                var villeMin = ville.ToLower();
 
                 query = query.Where(e =>
                     e.IdLocalisationNavigation != null &&
@@ -74,14 +62,10 @@ namespace PAN.Services
             }
 
             if (idType.HasValue)
-            {
                 query = query.Where(e => e.IdType == idType.Value);
-            }
 
             if (estMouvant.HasValue)
-            {
                 query = query.Where(e => e.Estmouvant == estMouvant.Value);
-            }
 
             return await query
                 .OrderByDescending(e => e.DateHeureObservation)
@@ -97,14 +81,12 @@ namespace PAN.Services
                     Latitude = e.Latitude,
                     Longitude = e.Longitude,
 
-                    Ville = e.IdLocalisationNavigation != null &&
-                            e.IdLocalisationNavigation.Ville != null
-                        ? e.IdLocalisationNavigation.Ville
+                    Ville = e.IdLocalisationNavigation != null
+                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
                         : string.Empty,
 
-                    TypeNom = e.IdTypeNavigation != null &&
-                              e.IdTypeNavigation.Nom != null
-                        ? e.IdTypeNavigation.Nom
+                    TypeNom = e.IdTypeNavigation != null
+                        ? e.IdTypeNavigation.Nom ?? string.Empty
                         : string.Empty,
 
                     IdType = e.IdType
@@ -197,18 +179,16 @@ namespace PAN.Services
                     Latitude = e.Latitude,
                     Longitude = e.Longitude,
 
-                    Ville = e.IdLocalisationNavigation != null &&
-                            e.IdLocalisationNavigation.Ville != null
-                        ? e.IdLocalisationNavigation.Ville
+                    Ville = e.IdLocalisationNavigation != null
+                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
                         : string.Empty,
 
                     CodePostal = e.IdLocalisationNavigation != null
                         ? e.IdLocalisationNavigation.CodePostal
                         : null,
 
-                    TypeNom = e.IdTypeNavigation != null &&
-                              e.IdTypeNavigation.Nom != null
-                        ? e.IdTypeNavigation.Nom
+                    TypeNom = e.IdTypeNavigation != null
+                        ? e.IdTypeNavigation.Nom ?? string.Empty
                         : string.Empty
                 })
                 .FirstOrDefaultAsync();
@@ -226,6 +206,33 @@ namespace PAN.Services
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        private IQueryable<EvenementListItem> BuildListQuery()
+        {
+            return _context.Evenement
+                .Include(e => e.IdLocalisationNavigation)
+                .Include(e => e.IdTypeNavigation)
+                .Select(e => new EvenementListItem
+                {
+                    IdEvenement = e.IdEvenement,
+                    DateHeureObservation = e.DateHeureObservation,
+                    Descriptif = e.Descriptif ?? string.Empty,
+                    EstMouvant = e.Estmouvant,
+                    UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
+
+                    Ville = e.IdLocalisationNavigation != null
+                        ? e.IdLocalisationNavigation.Ville ?? string.Empty
+                        : string.Empty,
+
+                    TypeNom = e.IdTypeNavigation != null
+                        ? e.IdTypeNavigation.Nom ?? string.Empty
+                        : string.Empty,
+
+                    IdType = e.IdType
+                });
         }
     }
 }
