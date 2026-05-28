@@ -1,17 +1,21 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using PAN.context.Models;
 using Microsoft.EntityFrameworkCore;
+using PAN.Models;
+using PAN.Services;
 
 namespace PAN.ViewModels;
 
 public partial class AdminViewModel : ObservableObject
 {
     private readonly GeipanContext _context;
+    private readonly IEvenementService _evenementService;
 
     [ObservableProperty]
     private ISeries[] series;
@@ -19,10 +23,36 @@ public partial class AdminViewModel : ObservableObject
     [ObservableProperty]
     private int totalCases;
 
-    public AdminViewModel(GeipanContext context)
+    [ObservableProperty]
+    private ObservableCollection<EvenementListItem> evenements = [];
+
+    public AdminViewModel(GeipanContext context, IEvenementService evenementService)
     {
         _context = context;
+        _evenementService = evenementService;
+
         LoadData();
+        _ = LoadEvenementsAsync();
+    }
+
+    private async Task LoadEvenementsAsync()
+    {
+        try
+        {
+            var items = await _evenementService.GetAllAsync();
+            Evenements = new ObservableCollection<EvenementListItem>(items);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Erreur lors de la récupération des observations : {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenDetailAsync(EvenementListItem item)
+    {
+        if (item == null) return;
+        await Shell.Current.GoToAsync($"EventDetailPage?idEvenement={item.IdEvenement}");
     }
 
     private void LoadData()

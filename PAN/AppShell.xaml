@@ -42,4 +42,9 @@
             ContentTemplate="{DataTemplate views:LoginPage}" />
 
     </TabBar>
+
+    <ShellContent
+        Route="admin"
+        ContentTemplate="{DataTemplate views:AdminPage}" 
+        FlyoutItemIsVisible="False" />
 </Shell>

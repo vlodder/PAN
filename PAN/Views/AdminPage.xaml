@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+             xmlns:models="clr-namespace:PAN.Models"
              x:Class="PAN.Views.AdminPage"
+             x:Name="AdminPageRoot"
              x:DataType="viewmodels:AdminViewModel"
              Title="Tableau de bord">
 
@@ -70,6 +72,57 @@
                                   LegendTextPaint="{AppThemeBinding Light=#000000, Dark=#FFFFFF}" />
                 </Grid>
             </Border>
+
+            <Label Text="Toutes les observations" 
+                   FontSize="18" 
+                   FontAttributes="Bold" 
+                   TextColor="{AppThemeBinding Light=#374151, Dark=#E5E7EB}" 
+                   Margin="10,20,10,0"/>
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Evenements}" 
+                                 Spacing="12" 
+                                 Margin="10,0">
+
+                <BindableLayout.EmptyView>
+                    <Label Text="Aucun événement trouvé" HorizontalOptions="Center" Margin="20" />
+                </BindableLayout.EmptyView>
+
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:EvenementListItem">
+                        <Border Padding="15"
+                                Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
+
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.15}" />
+                            </Border.Shadow>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference AdminPageRoot}}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding Ville}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
+                                <Label Text="{Binding Descriptif}" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" MaxLines="3" LineBreakMode="TailTruncation" />
+
+                                <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
+                                    <Label Text="{Binding TypeNom, StringFormat='Type : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                    <Label Text="{Binding UpVote, StringFormat='👍 {0}'}" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                </HorizontalStackLayout>
+
+                                <Label Text="{Binding DateHeureObservation, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                                       FontSize="11" 
+                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" 
+                                       HorizontalOptions="End" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>
