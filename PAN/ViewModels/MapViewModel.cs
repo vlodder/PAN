@@ -1,95 +1,144 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using PAN.context.Models;
 using PAN.Services;
 
 namespace PAN.ViewModels;
 
-public partial class MapViewModel(
-    IDialogService dialogService,
-    INavigationService navigationService,
-    IEvenementService evenementService)
-    : BaseViewModel(dialogService, navigationService)
+public partial class MapViewModel : BaseViewModel
 {
-    private readonly IEvenementService _evenementService = evenementService;
+    private readonly IEvenementService _evenementService;
+
+    private const int PageSize = 20;
+    private int _skip = 0;
+    private bool _isLoaded = false;
+
+    private readonly List<Evenement> _loadedEvents = new();
 
     [ObservableProperty]
     private HtmlWebViewSource htmlSource = new();
 
-    [RelayCommand]
-    private async Task LoadAsync()
+    public MapViewModel(
+        IDialogService dialogService,
+        INavigationService navigationService,
+        IEvenementService evenementService)
+        : base(dialogService, navigationService)
     {
-        var events = await _evenementService.GetAllAsync();
+        _evenementService = evenementService;
+        GenerateMapHtml();
+    }
 
-        var points = events
-            .Where(e => e.Latitude != null && e.Longitude != null)
-            .Select(e => new
+    [RelayCommand]
+    private async Task LoadMapAsync()
+    {
+        if (_isLoaded)
+            return;
+
+        _isLoaded = true;
+        _skip = 0;
+        _loadedEvents.Clear();
+
+        await LoadMoreAsync();
+    }
+
+    [RelayCommand]
+    private async Task LoadMoreAsync()
+    {
+        try
+        {
+            var events = await _evenementService.GetEventsForMapAsync(_skip, PageSize);
+
+            if (events.Count == 0)
             {
-                id = e.IdEvenement,
-                ville = e.Ville,
-                description = e.Descriptif,
-                lat = e.Latitude,
-                lng = e.Longitude,
-                upvote = e.UpVote
-            })
-            .ToList();
-        await Shell.Current.DisplayAlert(
-    "Debug carte",
-    $"Events: {events.Count} | Points GPS: {points.Count}",
-    "OK");
+                await DialogService.ShowAlertAsync("Info", "Aucune observation supplémentaire.", "OK");
+                return;
+            }
 
-        string json = JsonSerializer.Serialize(points);
+            _loadedEvents.AddRange(events);
+            _skip += PageSize;
+
+            GenerateMapHtml();
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowAlertAsync("Erreur", $"Impossible de charger la carte : {ex.Message}", "OK");
+        }
+    }
+
+    private void GenerateMapHtml()
+    {
+        var markers = new StringBuilder();
+
+        foreach (var ev in _loadedEvents)
+        {
+            if (ev.Latitude == null || ev.Longitude == null)
+                continue;
+
+            string lat = Convert.ToDouble(ev.Latitude).ToString(CultureInfo.InvariantCulture);
+            string lng = Convert.ToDouble(ev.Longitude).ToString(CultureInfo.InvariantCulture);
+
+            string titre = CleanJs(ev.Titre ?? "Observation");
+            string descriptif = CleanJs(ev.Descriptif ?? "");
+
+            markers.AppendLine($@"
+                L.marker([{lat}, {lng}])
+                    .addTo(map)
+                    .bindPopup('<b>{titre}</b><br>{descriptif}');
+            ");
+        }
 
         HtmlSource = new HtmlWebViewSource
         {
-            Html = BuildMapHtml(json)
-        };
-    }
-
-    private static string BuildMapHtml(string pointsJson)
-    {
-        return $$"""
+            Html = $@"
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+
+    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+    <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
 
     <style>
-        html, body, #map {
+        html, body, #map {{
             height: 100%;
             width: 100%;
             margin: 0;
+            padding: 0;
             background: #020B18;
-        }
+        }}
     </style>
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id='map'></div>
 
     <script>
-        const map = L.map('map').setView([46.5, 2.5], 5);
+        var map = L.map('map', {{
+            zoomControl: true
+        }}).setView([46.603354, 1.888334], 5);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
+        L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+            maxZoom: 18
+        }}).addTo(map);
 
-        const points = {{pointsJson}};
-
-        points.forEach(p => {
-            L.marker([p.lat, p.lng])
-                .addTo(map)
-                .bindPopup(`
-                    <b>${p.ville}</b><br>
-                    ${p.description}<br><br>
-                    <b>↑ ${p.upvote}</b>
-                `);
-        });
+        {markers}
     </script>
 </body>
-</html>
-""";
+</html>"
+        };
+    }
+
+    private static string CleanJs(string value)
+    {
+        return value
+            .Replace("\\", "\\\\")
+            .Replace("'", "\\'")
+            .Replace("\"", "\\\"")
+            .Replace("\r", "")
+            .Replace("\n", "<br>");
     }
 }

@@ -1,3 +1,5 @@
+using PAN.ViewModels;
+
 namespace PAN.Views;
 
 public partial class MapPage : ContentPage
@@ -8,11 +10,11 @@ public partial class MapPage : ContentPage
         BindingContext = viewModel;
     }
 
-    protected override async void OnAppearing()
+    private async void ContentPage_Appearing(object sender, EventArgs e)
     {
-        base.OnAppearing();
-
         if (BindingContext is MapViewModel vm)
-            await vm.LoadCommand.ExecuteAsync(null);
+        {
+            await vm.LoadMapCommand.ExecuteAsync(null);
+        }
     }
 }

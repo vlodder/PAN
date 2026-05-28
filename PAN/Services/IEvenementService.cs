@@ -1,4 +1,5 @@
-﻿using PAN.Models;
+﻿using PAN.context.Models;
+using PAN.Models;
 
 namespace PAN.Services
 {
@@ -16,6 +17,9 @@ namespace PAN.Services
 
         Task<List<string>> GetVillesAsync();
         Task<List<TypeOption>> GetTypesAsync();
+        
+        Task<List<Evenement>> GetEventsForMapAsync(int skip, int take);
+        
 
         Task<EvenementDetailItem?> GetByIdAsync(int idEvenement);
         Task<bool> AddUpVoteAsync(int idEvenement);
