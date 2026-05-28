@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PAN.context.Models;
+using PAN.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace PAN.ViewModels;
@@ -10,6 +11,7 @@ namespace PAN.ViewModels;
 public partial class NewEventViewModel : ObservableObject
 {
     private readonly GeipanContext _context;
+    private readonly IEvenementService _evenementService;
 
     [ObservableProperty]
     private int? idEvenement;
@@ -17,103 +19,126 @@ public partial class NewEventViewModel : ObservableObject
     [ObservableProperty]
     private string titrePage = "Nouvelle observation";
 
-    [ObservableProperty] private string descriptif;
+    // Propriété magique pour masquer/afficher les champs d'administration
+    [ObservableProperty]
+    private bool isEditMode;
+
+    [ObservableProperty] private string descriptif = string.Empty;
+    [ObservableProperty] private string compteRendu = string.Empty; // Nouveau champ
     [ObservableProperty] private DateTime dateObservation = DateTime.Now;
     [ObservableProperty] private decimal latitude;
     [ObservableProperty] private decimal longitude;
     [ObservableProperty] private bool estMouvant;
 
-    // Collections pour alimenter les listes déroulantes (Pickers)
-    [ObservableProperty] private ObservableCollection<PAN.context.Models.Type> types = new();
+    // Listes alimentées par le Service et le Context
+    [ObservableProperty] private ObservableCollection<string> villes = new();
+    [ObservableProperty] private ObservableCollection<TypeOption> types = new();
     [ObservableProperty] private ObservableCollection<Classement> classements = new();
-    [ObservableProperty] private ObservableCollection<Localisation> localisations = new();
 
-    // Éléments actuellement sélectionnés dans l'interface
-    [ObservableProperty] private PAN.context.Models.Type selectedType;
-    [ObservableProperty] private Classement selectedClassement;
-    [ObservableProperty] private Localisation selectedLocalisation;
+    // Éléments sélectionnés
+    [ObservableProperty] private string selectedVille = string.Empty;
+    [ObservableProperty] private TypeOption? selectedType;
+    [ObservableProperty] private Classement? selectedClassement;
 
-    public NewEventViewModel(GeipanContext context)
+    private bool _listsLoaded = false;
+
+    public NewEventViewModel(GeipanContext context, IEvenementService evenementService)
     {
         _context = context;
+        _evenementService = evenementService;
+
+        _ = LoadMasterListsAsync();
     }
 
-    partial void OnIdEvenementChanged(int? value)
-    {
-        _ = LoadPageDataAsync(value);
-    }
-
-    private async Task LoadPageDataAsync(int? id)
+    private async Task LoadMasterListsAsync()
     {
         try
         {
-            // 1. Chargement synchrone de tous les référentiels depuis la base SQLite
-            var typesDb = await _context.Type.ToListAsync();
-            Types = new ObservableCollection<PAN.context.Models.Type>(typesDb);
+            var villesList = await _evenementService.GetVillesAsync();
+            Villes = new ObservableCollection<string>(villesList);
+
+            var typesList = await _evenementService.GetTypesAsync();
+            Types = new ObservableCollection<TypeOption>(typesList);
 
             var classementsDb = await _context.Classement.ToListAsync();
             Classements = new ObservableCollection<Classement>(classementsDb);
 
-            var localisationsDb = await _context.Localisation.OrderBy(l => l.Ville).ToListAsync();
-            Localisations = new ObservableCollection<Localisation>(localisationsDb);
+            _listsLoaded = true;
 
-            // 2. Initialisation du formulaire selon le contexte (Création ou Édition)
-            if (id.HasValue && id.Value > 0)
+            if (IdEvenement.HasValue && IdEvenement.Value > 0)
             {
-                TitrePage = "Modifier l'observation";
-                await LoadEvenementForEditAsync(id.Value);
-            }
-            else
-            {
-                TitrePage = "Nouvelle observation";
-                ResetFields();
+                await LoadEvenementForEditAsync(IdEvenement.Value);
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Erreur d'initialisation de la page : {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Erreur chargement listes : {ex.Message}");
         }
     }
 
-    private void ResetFields()
+    partial void OnIdEvenementChanged(int? value)
     {
-        Descriptif = string.Empty;
-        DateObservation = DateTime.Now;
-        Latitude = 0;
-        Longitude = 0;
-        EstMouvant = false;
-        SelectedType = Types.FirstOrDefault();
-        SelectedClassement = null;
-        SelectedLocalisation = null;
+        if (value.HasValue && value.Value > 0)
+        {
+            TitrePage = "Modifier l'observation";
+            IsEditMode = true; // On affiche le Cas et le Compte Rendu
+
+            if (_listsLoaded)
+            {
+                _ = LoadEvenementForEditAsync(value.Value);
+            }
+        }
+        else
+        {
+            TitrePage = "Nouvelle observation";
+            IsEditMode = false; // On masque l'administration
+
+            Descriptif = string.Empty;
+            CompteRendu = string.Empty;
+            DateObservation = DateTime.Now;
+            Latitude = 0;
+            Longitude = 0;
+            EstMouvant = false;
+            SelectedVille = string.Empty;
+            SelectedType = null;
+            SelectedClassement = null;
+        }
     }
 
     private async Task LoadEvenementForEditAsync(int id)
     {
-        var ev = await _context.Evenement
-            .Include(e => e.IdLocalisationNavigation)
-            .FirstOrDefaultAsync(e => e.IdEvenement == id);
-
-        if (ev != null)
+        try
         {
-            Descriptif = ev.Descriptif;
-            DateObservation = ev.DateHeureObservation;
-            Latitude = ev.Latitude;
-            Longitude = ev.Longitude;
-            EstMouvant = ev.Estmouvant;
+            var ev = await _context.Evenement
+                .Include(e => e.IdLocalisationNavigation)
+                .FirstOrDefaultAsync(e => e.IdEvenement == id);
 
-            // Sélection des objets correspondants en comparant les identifiants uniques
-            SelectedType = Types.FirstOrDefault(t => t.IdType == ev.IdType);
-            SelectedClassement = Classements.FirstOrDefault(c => c.IdClassement == ev.IdClassement);
-            SelectedLocalisation = Localisations.FirstOrDefault(l => l.IdLocalisation == ev.IdLocalisation);
+            if (ev != null)
+            {
+                Descriptif = ev.Descriptif ?? string.Empty;
+                CompteRendu = ev.CompteRendu ?? string.Empty;
+                DateObservation = ev.DateHeureObservation;
+                Latitude = ev.Latitude;
+                Longitude = ev.Longitude;
+                EstMouvant = ev.Estmouvant;
+
+                SelectedVille = ev.IdLocalisationNavigation?.Ville ?? string.Empty;
+                SelectedType = Types.FirstOrDefault(t => t.Id == ev.IdType);
+                SelectedClassement = Classements.FirstOrDefault(c => c.IdClassement == ev.IdClassement);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Erreur chargement édition : {ex.Message}");
         }
     }
 
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (SelectedLocalisation == null)
+        if (string.IsNullOrWhiteSpace(SelectedVille))
         {
-            await Shell.Current.DisplayAlert("Champs requis", "Veuillez sélectionner une ville dans la liste.", "OK");
+            await Shell.Current.DisplayAlert("Champs requis", "Veuillez sélectionner une ville.", "OK");
             return;
         }
 
@@ -125,11 +150,17 @@ public partial class NewEventViewModel : ObservableObject
 
         try
         {
+            var loc = await _context.Localisation.FirstOrDefaultAsync(l => l.Ville == SelectedVille);
+            if (loc == null)
+            {
+                loc = new Localisation { Ville = SelectedVille };
+                await _context.Localisation.AddAsync(loc);
+            }
+
             if (IdEvenement.HasValue && IdEvenement.Value > 0)
             {
-                // Mode Modification
+                // === MODE MODIFICATION ===
                 var ev = await _context.Evenement.FindAsync(IdEvenement.Value);
-
                 if (ev != null)
                 {
                     ev.Descriptif = Descriptif;
@@ -137,16 +168,20 @@ public partial class NewEventViewModel : ObservableObject
                     ev.Latitude = Latitude;
                     ev.Longitude = Longitude;
                     ev.Estmouvant = EstMouvant;
-                    ev.IdType = SelectedType.IdType;
+                    ev.IdType = SelectedType.Id;
+
+                    // On met à jour les champs exclusifs à l'édition
                     ev.IdClassement = SelectedClassement?.IdClassement;
-                    ev.IdLocalisation = SelectedLocalisation.IdLocalisation; // Clé étrangère mise à jour directement
+                    ev.CompteRendu = string.IsNullOrWhiteSpace(CompteRendu) ? null : CompteRendu;
+
+                    ev.IdLocalisationNavigation = loc;
 
                     _context.Evenement.Update(ev);
                 }
             }
             else
             {
-                // Mode Création
+                // === MODE CRÉATION ===
                 var newEv = new Evenement
                 {
                     Descriptif = Descriptif,
@@ -154,9 +189,12 @@ public partial class NewEventViewModel : ObservableObject
                     Latitude = Latitude,
                     Longitude = Longitude,
                     Estmouvant = EstMouvant,
-                    IdType = SelectedType.IdType,
-                    IdClassement = SelectedClassement?.IdClassement,
-                    IdLocalisation = SelectedLocalisation.IdLocalisation
+                    IdType = SelectedType.Id,
+                    IdLocalisationNavigation = loc,
+
+                    // Forcé à null car non géré par l'utilisateur à la création
+                    IdClassement = null,
+                    CompteRendu = null
                 };
                 await _context.Evenement.AddAsync(newEv);
             }
