@@ -215,5 +215,9 @@ public partial class NewEventViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlert("Erreur", $"Impossible d'enregistrer : {ex.InnerException?.Message ?? ex.Message}", "OK");
         }
+        private async Task GoToHomeAsync()
+        {
+            await Shell.Current.GoToAsync("//HomePage");
+        }
     }
 }

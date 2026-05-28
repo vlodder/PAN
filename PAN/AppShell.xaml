@@ -36,7 +36,7 @@
             ContentTemplate="{DataTemplate views:SearchPage}" />
 
         <ShellContent
-            Title="Profil"
+            Title="Geipan"
             Route="login"
             Icon="user.png"
             ContentTemplate="{DataTemplate views:LoginPage}" />

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PAN.Views.MapPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:PAN.ViewModels"
+    x:DataType="viewmodels:MapViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="#020B18">
+
+    <Grid>
+
+        <Image Source="background_space.jpg" Aspect="AspectFill" Opacity="1" />
+        <BoxView Color="#020B18" Opacity="0.42" />
+
+        <Grid HorizontalOptions="Center" WidthRequest="430">
+            <Grid RowDefinitions="Auto,*,Auto">
+
+                <!-- HEADER -->
+                <Grid Grid.Row="0" Padding="26,56,26,16" ColumnDefinitions="Auto,*">
+
+                    <Button
+                        Text="‹"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        CornerRadius="22"
+                        Padding="0"
+                        BackgroundColor="#09182D"
+                        BorderColor="#1D385C"
+                        BorderWidth="1"
+                        TextColor="White"
+                        FontSize="30"
+                        Command="{Binding BackCommand}" />
+
+                    <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" Spacing="2">
+                        <Label
+                            Text="Carte"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Observations géolocalisées"
+                            FontSize="15"
+                            TextColor="#AEB9CA" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- MAP -->
+                <Frame
+                    Grid.Row="1"
+                    Margin="26,0,26,16"
+                    CornerRadius="24"
+                    Padding="0"
+                    HasShadow="False"
+                    BackgroundColor="#0A1B31"
+                    BorderColor="#1D385C"
+                    IsClippedToBounds="True">
+
+                    <WebView
+                        x:Name="MapWebView"
+                        Source="{Binding HtmlSource}" />
+                </Frame>
+
+                <!-- NAV CUSTOM -->
+                <Frame
+                    Grid.Row="2"
+                    Margin="20,0,20,16"
+                    CornerRadius="18"
+                    Padding="0"
+                    HasShadow="False"
+                    BackgroundColor="#09182D"
+                    BorderColor="#1D385C">
+
+                    <Grid ColumnDefinitions="*,*,Auto,*,*" Padding="12,10" ColumnSpacing="10">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌂" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Accueil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="♢" FontSize="26" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                            <Label Text="Carte" FontSize="13" TextColor="#4ED464" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="2"
+                            Text="+"
+                            Command="{Binding GoToNewEventCommand}"
+                            WidthRequest="68"
+                            HeightRequest="68"
+                            CornerRadius="34"
+                            BackgroundColor="#52D765"
+                            TextColor="White"
+                            FontSize="34"
+                            FontAttributes="Bold"
+                            Padding="0" />
+
+                        <VerticalStackLayout Grid.Column="3" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="⌕" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Rechercher" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="4" Spacing="4" HorizontalOptions="Center">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="♙" FontSize="26" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                            <Label Text="Profil" FontSize="13" TextColor="#AEB9CA" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Frame>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

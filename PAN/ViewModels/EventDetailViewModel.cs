@@ -113,5 +113,7 @@ namespace PAN.ViewModels
             string url = $"https://www.openstreetmap.org/?mlat={lat}&mlon={lng}#map=15/{lat}/{lng}";
             await Launcher.Default.OpenAsync(url);
         }
-    }
+       
+         
+        }
 }

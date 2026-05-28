@@ -11,7 +11,7 @@ namespace PAN.ViewModels
         {
             if (Password == "geipan")
             {
-                await NavigationService.GoToAsync("//admin");
+                await Shell.Current.GoToAsync("AdminPage");
             }
             else
             {
@@ -20,5 +20,9 @@ namespace PAN.ViewModels
         }
 
 
+        private async Task GoToHomeAsync()
+        {
+            await Shell.Current.GoToAsync("//HomePage");
+        }
     }
 }

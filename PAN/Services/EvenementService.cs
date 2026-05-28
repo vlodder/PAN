@@ -25,13 +25,20 @@ namespace PAN.Services
                     Descriptif = e.Descriptif ?? string.Empty,
                     EstMouvant = e.Estmouvant,
                     UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
+
                     Ville = e.IdLocalisationNavigation != null
                         ? e.IdLocalisationNavigation.Ville ?? string.Empty
                         : string.Empty,
+
                     TypeNom = e.IdTypeNavigation != null
                         ? e.IdTypeNavigation.Nom ?? string.Empty
-                        : string.Empty
-                }).ToListAsync();
+                        : string.Empty,
+
+                    IdType = e.IdType
+                })
+                .ToListAsync();
         }
 
         public async Task<List<EvenementListItem>> SearchPagedAsync(
@@ -83,20 +90,20 @@ namespace PAN.Services
                 .Select(e => new EvenementListItem
                 {
                     IdEvenement = e.IdEvenement,
-
                     DateHeureObservation = e.DateHeureObservation,
-
                     Descriptif = e.Descriptif ?? string.Empty,
-
                     EstMouvant = e.Estmouvant,
-
                     UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
 
-                    Ville = e.IdLocalisationNavigation != null && e.IdLocalisationNavigation.Ville != null
+                    Ville = e.IdLocalisationNavigation != null &&
+                            e.IdLocalisationNavigation.Ville != null
                         ? e.IdLocalisationNavigation.Ville
                         : string.Empty,
 
-                    TypeNom = e.IdTypeNavigation != null && e.IdTypeNavigation.Nom != null
+                    TypeNom = e.IdTypeNavigation != null &&
+                              e.IdTypeNavigation.Nom != null
                         ? e.IdTypeNavigation.Nom
                         : string.Empty,
 
@@ -117,7 +124,8 @@ namespace PAN.Services
                 texte = texte.ToLower();
 
                 query = query.Where(e =>
-                    (e.Descriptif != null && e.Descriptif.ToLower().Contains(texte)) ||
+                    (e.Descriptif != null &&
+                     e.Descriptif.ToLower().Contains(texte)) ||
                     (e.IdLocalisationNavigation != null &&
                      e.IdLocalisationNavigation.Ville != null &&
                      e.IdLocalisationNavigation.Ville.ToLower().Contains(texte)) ||
@@ -135,15 +143,22 @@ namespace PAN.Services
                     Descriptif = e.Descriptif ?? string.Empty,
                     EstMouvant = e.Estmouvant,
                     UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
+
                     Ville = e.IdLocalisationNavigation != null
                         ? e.IdLocalisationNavigation.Ville ?? string.Empty
                         : string.Empty,
+
                     TypeNom = e.IdTypeNavigation != null
                         ? e.IdTypeNavigation.Nom ?? string.Empty
-                        : string.Empty
+                        : string.Empty,
+
+                    IdType = e.IdType
                 })
                 .ToListAsync();
         }
+
         public async Task<List<string>> GetVillesAsync()
         {
             return await _context.Localisation
@@ -175,16 +190,15 @@ namespace PAN.Services
                 .Select(e => new EvenementDetailItem
                 {
                     IdEvenement = e.IdEvenement,
-
                     DateHeureObservation = e.DateHeureObservation,
-
                     Descriptif = e.Descriptif ?? string.Empty,
-
                     EstMouvant = e.Estmouvant,
-
                     UpVote = e.UpVote ?? 0,
+                    Latitude = e.Latitude,
+                    Longitude = e.Longitude,
 
-                    Ville = e.IdLocalisationNavigation != null && e.IdLocalisationNavigation.Ville != null
+                    Ville = e.IdLocalisationNavigation != null &&
+                            e.IdLocalisationNavigation.Ville != null
                         ? e.IdLocalisationNavigation.Ville
                         : string.Empty,
 
@@ -192,10 +206,8 @@ namespace PAN.Services
                         ? e.IdLocalisationNavigation.CodePostal
                         : null,
 
-                    Latitude = e.Latitude,
-                    Longitude = e.Longitude,
-
-                    TypeNom = e.IdTypeNavigation != null && e.IdTypeNavigation.Nom != null
+                    TypeNom = e.IdTypeNavigation != null &&
+                              e.IdTypeNavigation.Nom != null
                         ? e.IdTypeNavigation.Nom
                         : string.Empty
                 })
