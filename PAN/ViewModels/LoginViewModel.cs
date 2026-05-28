@@ -18,6 +18,8 @@ namespace PAN.ViewModels
                 await DialogService.DisplayAlertAsync("Erreur", "Mot de passe incorrect", "OK");
             }
         }
+
+
         private async Task GoToHomeAsync()
         {
             await Shell.Current.GoToAsync("//HomePage");
