@@ -30,6 +30,7 @@ namespace PAN.ViewModels
         {
             var items = await _evenementService.GetAllAsync();
             Evenements = new ObservableCollection<EvenementListItem>(items);
+        }
         private string selectedVille = string.Empty;
 
         [ObservableProperty]
@@ -52,8 +53,6 @@ namespace PAN.ViewModels
             "Non"
         };
 
-        [ObservableProperty]
-        private ObservableCollection<EvenementListItem> evenements = new();
 
         [RelayCommand]
         private async Task InitFiltersAsync()
@@ -106,7 +105,7 @@ namespace PAN.ViewModels
 
                 var items = await _evenementService.SearchPagedAsync(
                     SearchText,
-                    SelectedVille,
+                    "",
                     SelectedType?.Id,
                     estMouvant,
                     _currentSkip,

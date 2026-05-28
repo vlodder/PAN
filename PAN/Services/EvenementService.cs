@@ -21,9 +21,9 @@ namespace PAN.Services
                 .Select(e => new EvenementListItem
                 {
                     IdEvenement = e.IdEvenement,
-                    DateHeureObservation = e.DateHeureObservation ?? DateTime.MinValue,
+                    DateHeureObservation = e.DateHeureObservation,
                     Descriptif = e.Descriptif ?? string.Empty,
-                    EstMouvant = e.Estmouvant ?? false,
+                    EstMouvant = e.Estmouvant,
                     UpVote = e.UpVote ?? 0,
                     Ville = e.IdLocalisationNavigation != null
                         ? e.IdLocalisationNavigation.Ville ?? string.Empty
@@ -31,6 +31,9 @@ namespace PAN.Services
                     TypeNom = e.IdTypeNavigation != null
                         ? e.IdTypeNavigation.Nom ?? string.Empty
                         : string.Empty
+                }).ToListAsync();
+        }
+
         public async Task<List<EvenementListItem>> SearchPagedAsync(
             string texte,
             string ville,
@@ -128,9 +131,9 @@ namespace PAN.Services
                 .Select(e => new EvenementListItem
                 {
                     IdEvenement = e.IdEvenement,
-                    DateHeureObservation = e.DateHeureObservation ?? DateTime.MinValue,
+                    DateHeureObservation = e.DateHeureObservation,
                     Descriptif = e.Descriptif ?? string.Empty,
-                    EstMouvant = e.Estmouvant ?? false,
+                    EstMouvant = e.Estmouvant,
                     UpVote = e.UpVote ?? 0,
                     Ville = e.IdLocalisationNavigation != null
                         ? e.IdLocalisationNavigation.Ville ?? string.Empty
@@ -140,6 +143,7 @@ namespace PAN.Services
                         : string.Empty
                 })
                 .ToListAsync();
+        }
         public async Task<List<string>> GetVillesAsync()
         {
             return await _context.Localisation

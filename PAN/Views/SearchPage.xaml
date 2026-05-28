@@ -9,23 +9,6 @@
     x:DataType="viewmodels:SearchViewModel"
     Title="Recherche">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
-
-        <Label
-            Text="Recherche d'observations"
-            FontSize="24"
-            FontAttributes="Bold" />
-
-        <SearchBar
-            Placeholder="Ville, description, type..."
-            Text="{Binding SearchText}"
-            SearchCommand="{Binding SearchCommand}" />
-
-        <Button
-            Text="Charger tous les événements"
-            Command="{Binding LoadCommand}" />
-
-        <CollectionView ItemsSource="{Binding Evenements}">
     <Grid Padding="20" RowDefinitions="Auto,Auto,*" RowSpacing="15">
 
         <Label
@@ -60,6 +43,7 @@
             <Button
                 Text="Rechercher"
                 Command="{Binding SearchCommand}" />
+
         </VerticalStackLayout>
 
         <CollectionView
@@ -77,40 +61,15 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:EvenementListItem">
-                    <Frame Margin="0,5" Padding="10">
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                Text="{Binding Ville}"
-                                FontAttributes="Bold"
-                                FontSize="18" />
-
-                            <Label Text="{Binding Descriptif}" />
-
-                            <Label
-                                Text="{Binding TypeNom, StringFormat='Type : {0}'}"
-                                TextColor="Gray" />
-
-                            <Label
-                                Text="{Binding EstMouvant, StringFormat='Mouvant : {0}'}"
-                                FontSize="12" />
-
-                            <Label
-                                Text="{Binding UpVote, StringFormat='Upvotes : {0}'}"
-                                FontSize="12" />
-
-                            <Label
-                                Text="{Binding DateHeureObservation, StringFormat='Date : {0:dd/MM/yyyy HH:mm}'}"
-                                FontSize="12" />
-                        </VerticalStackLayout>
-                    </Frame>
                     <Border
                         Margin="0,5"
                         Padding="10"
                         Stroke="#D3D3D3"
                         StrokeShape="RoundRectangle 10">
+
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SearchViewModel}}, Path=OpenDetailCommand}"
+                                Command="{Binding BindingContext.OpenDetailCommand, Source={x:Reference SearchPageRoot}}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
 
@@ -127,6 +86,5 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-    </VerticalStackLayout>
     </Grid>
 </ContentPage>
