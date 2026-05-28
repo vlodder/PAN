@@ -207,7 +207,27 @@ namespace PAN.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<List<EvenementListItem>> GetLatestAsync(int take)
+        {
+            return await BuildListQuery()
+                .OrderByDescending(e => e.DateHeureObservation)
+                .Take(take)
+                .ToListAsync();
+        }
 
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Evenement.CountAsync();
+        }
+
+        public async Task<int> GetCityCountAsync()
+        {
+            return await _context.Localisation
+                .Where(l => l.Ville != null)
+                .Select(l => l.Ville)
+                .Distinct()
+                .CountAsync();
+        }
         private IQueryable<EvenementListItem> BuildListQuery()
         {
             return _context.Evenement

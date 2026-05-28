@@ -25,6 +25,9 @@ namespace PAN.Services
         Task<EvenementDetailItem?> GetByIdAsync(int idEvenement);
 
         Task<bool> AddUpVoteAsync(int idEvenement);
+        Task<List<EvenementListItem>> GetLatestAsync(int take);
+        Task<int> GetTotalCountAsync();
+        Task<int> GetCityCountAsync();
     }
 
     public class TypeOption
