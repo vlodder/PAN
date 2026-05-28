@@ -29,7 +29,7 @@
             Title="Connexion"
             Route="login"
             ContentTemplate="{DataTemplate views:LoginPage}" />
-    </FlyoutItem>
+    </FlyoutIte>m
     <ShellContent
             Title="Administration"
             Route="admin"

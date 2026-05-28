@@ -23,6 +23,13 @@ namespace PAN.ViewModels
         private string searchText = string.Empty;
 
         [ObservableProperty]
+        private ObservableCollection<EvenementListItem> evenements = [];
+
+        [RelayCommand]
+        private async Task LoadAsync()
+        {
+            var items = await _evenementService.GetAllAsync();
+            Evenements = new ObservableCollection<EvenementListItem>(items);
         private string selectedVille = string.Empty;
 
         [ObservableProperty]
@@ -71,6 +78,8 @@ namespace PAN.ViewModels
         [RelayCommand]
         private async Task SearchAsync()
         {
+            var items = await _evenementService.SearchAsync(SearchText);
+            Evenements = new ObservableCollection<EvenementListItem>(items);
             _currentSkip = 0;
             _hasMoreItems = true;
             Evenements.Clear();

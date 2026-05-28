@@ -17,6 +17,7 @@ namespace PAN.Views
 
             if (BindingContext is SearchViewModel vm)
             {
+                await vm.LoadCommand.ExecuteAsync(null);
                 await vm.InitFiltersCommand.ExecuteAsync(null);
                 await vm.SearchCommand.ExecuteAsync(null);
             }
